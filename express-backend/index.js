@@ -1,28 +1,66 @@
 const express = require('express');
-const app = express();
-const PORT = 3000;
+const connectDB = require('./config/db');
+const cors = require("cors");
+const dotenv = require("dotenv");
 
-// Middleware to parse JSON
+dotenv.config({ path: "./config/config.env" });
+connectDB();
+
+const app = express();
+app.use(cors());
 app.use(express.json());
 
-// Sample route
-app.get('/', (req, res) => {
-  res.send('Hello, Express!');
+// Route imports
+app.use("/api/auth", require("./routes/auth"));
+
+const auth = require("./middleware/auth");
+app.get("/api/protected", auth, (req, res) => {
+  res.json({ message: "This is protected data.", user: req.user });
 });
 
-// Start server
+
+const bookRoutes = require('./routes/bookRoutes');
+app.use('/api/books', bookRoutes);
+
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
+
+const cartRoutes = require('./routes/cartRoutes');
+app.use('/api/users/:userId/cart', cartRoutes); 
+
+const orderRoutes = require('./routes/orderRoutes');
+app.use('/api/orders',orderRoutes);
+
+
+
+
+
+const reviewRoutes = require('./routes/reviewRoutes');
+app.use('/api/reviews', reviewRoutes);
+
+
+
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 
-// GET route
-app.get('/api/users', (req, res) => {
-  res.json([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]);
-});
-
-// POST route
-app.post('/api/users', (req, res) => {
-  const newUser = req.body;
-  res.status(201).json({ message: 'User created', user: newUser });
-});
+// app.get('/api/testdb', async (req, res) => {
+//   try {
+//     // Try a simple query
+//     const usersCount = await User.countDocuments();
+//     res.status(200).json({
+//       status: 'success',
+//       message: 'Database connection successful',
+//       usersCount,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       status: 'error',
+//       message: 'Database connection failed',
+//       error: err.message,
+//     });
+//   }
+// });
