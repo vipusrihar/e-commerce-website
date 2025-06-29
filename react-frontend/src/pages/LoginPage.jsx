@@ -1,15 +1,19 @@
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
+import { loginUser } from "../services/authServics";
+import { loginStart, loginSuccess, loginFailure } from "../state/authentication/authSlice";
 
-export default function LoginPage() {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpen(false);
@@ -17,14 +21,22 @@ export default function LoginPage() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-     
+  e.preventDefault();
+  dispatch(loginStart());
+  try {
+    const response = await loginUser(email, password); 
+    dispatch(loginSuccess(response));
+    if(response.data.role == "ADMIN"){
+      navigate("/adminDashboard");
+    }else{
       navigate("/dashboard");
-    } catch (error) {
-      alert("Login failed. Check your credentials.");
     }
-  };
+    
+  } catch (error) {
+    dispatch(loginFailure("Invalid credentials"));
+    alert("Login failed. Check your credentials.");
+  }
+};
 
   return (
     <Modal open={open} >
@@ -84,3 +96,5 @@ export default function LoginPage() {
     </Modal>
   );
 }
+
+export default LoginPage

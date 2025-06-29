@@ -5,10 +5,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function SignupPage() {
+const SignupPage = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [repassword,setRepassword] = useState("");
+  const [role, setRole] = useState("user");
+  const [address, setAddress] = useState("");
+  const [repassword, setRepassword] = useState("");
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
 
@@ -20,8 +23,12 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      
-      navigate("/userForm");
+      if(password !== repassword){
+        alert("Password Not match")
+        return;
+      }
+
+      navigate("/dashboard");
     } catch (error) {
       alert("Signup failed. Try again.");
     }
@@ -41,7 +48,15 @@ export default function SignupPage() {
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4"
-        >
+        >        
+          <TextField
+            label="Name"
+            type="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            fullWidth
+          />
           <TextField
             label="Email"
             type="email"
@@ -50,7 +65,15 @@ export default function SignupPage() {
             required
             fullWidth
           />
-
+          <TextField
+            label="Address"
+            type="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+            fullWidth
+          />
+          
           <TextField
             label="Password"
             type="password"
@@ -59,7 +82,6 @@ export default function SignupPage() {
             required
             fullWidth
           />
-
           <TextField
             label="Re-Password"
             type="repassword"
@@ -68,7 +90,6 @@ export default function SignupPage() {
             required
             fullWidth
           />
-
           <Button
             variant="contained"
             type="submit"
@@ -83,7 +104,7 @@ export default function SignupPage() {
           </Button>
         </form>
 
-        {/* Link to Login */}
+
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-600 hover:underline">
@@ -94,3 +115,5 @@ export default function SignupPage() {
     </Modal>
   );
 }
+
+export default SignupPage;

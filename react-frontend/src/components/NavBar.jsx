@@ -14,7 +14,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import { useNavigate } from 'react-router-dom';
-
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
+import { useSelector } from 'react-redux';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -60,9 +61,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-function NavBar() {
+
+const  NavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
+
+  const auth = useSelector((state) => state.auth);
+  console.log("store:", auth);
+
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -78,10 +84,9 @@ function NavBar() {
   }
 
   return (
-    <AppBar position="static" sx={{backgroundColor:'#A47864'}}>
+    <AppBar position="static" sx={{ backgroundColor: '#A47864' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* Logo for large screens */}
           <Typography
             variant="h6"
             noWrap
@@ -133,13 +138,18 @@ function NavBar() {
             </Search>
           </Box>
 
+          <Box sx={{ paddingRight: 2 }}>
+            <ShoppingCartRoundedIcon sx={{ width: 40, height: 40 }} />
+          </Box>
+
           {/* User avatar and dropdown menu */}
           <Box sx={{ flexGrow: 0 }}>
-            {false ? (
+            {auth?.user ? (
               <>
+              {console.log(auth?.user?.name)}
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Vipusa" src="/static/images/avatar/2.jpg" />
+                    <Avatar alt={auth.user.name} src="/static/images/avatar/2.jpg" />
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -166,7 +176,7 @@ function NavBar() {
                 </Menu>
               </>
             ) : (
-              <NoAccountsIcon style={{height :40, width : 40}} onClick={() => handleLogin()} />
+              <NoAccountsIcon style={{ height: 40, width: 40 }} onClick={() => handleLogin()} />
             )}
           </Box>
 
