@@ -4,16 +4,19 @@ import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../state/authentication/Action";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
   const [address, setAddress] = useState("");
   const [repassword, setRepassword] = useState("");
+  const [role,setRole] = useState("USER"); 
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpen(false);
@@ -22,16 +25,24 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if(password !== repassword){
-        alert("Password Not match")
-        return;
-      }
-
-      navigate("/dashboard");
-    } catch (error) {
-      alert("Signup failed. Try again.");
+    if (!name || !email || !password || !address || !repassword) {
+      alert("Please fill all fields");
+      return;
     }
+
+    if (password !== repassword) {
+      alert("Password Not match")
+      return;
+    }
+    const userData = {
+      name,
+      email,
+      password,
+      address,
+      role
+    };
+    dispatch(registerUser(userData, navigate));
+
   };
 
   return (
@@ -48,10 +59,10 @@ const SignupPage = () => {
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4"
-        >        
+        >
           <TextField
             label="Name"
-            type="name"
+            type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -67,13 +78,13 @@ const SignupPage = () => {
           />
           <TextField
             label="Address"
-            type="address"
+            type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
             fullWidth
           />
-          
+
           <TextField
             label="Password"
             type="password"
@@ -84,7 +95,7 @@ const SignupPage = () => {
           />
           <TextField
             label="Re-Password"
-            type="repassword"
+            type="password"
             value={repassword}
             onChange={(e) => setRepassword(e.target.value)}
             required

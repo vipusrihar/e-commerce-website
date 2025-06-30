@@ -5,8 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
-import { loginUser } from "../services/authServics";
-import { loginStart, loginSuccess, loginFailure } from "../state/authentication/authSlice";
+import { loginUser } from "../state/authentication/Action";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -20,23 +19,11 @@ const LoginPage = () => {
     navigate('/');
   }
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  dispatch(loginStart());
-  try {
-    const response = await loginUser(email, password); 
-    dispatch(loginSuccess(response));
-    if(response.data.role == "ADMIN"){
-      navigate("/adminDashboard");
-    }else{
-      navigate("/dashboard");
-    }
-    
-  } catch (error) {
-    dispatch(loginFailure("Invalid credentials"));
-    alert("Login failed. Check your credentials.");
-  }
-};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser(email, password, navigate));
+  };
+
 
   return (
     <Modal open={open} >

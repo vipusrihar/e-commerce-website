@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-const Cart = require('../models/Cart')
+const Cart = require('../models/Cart');
+
 
 exports.signup = async (req, res) => {
   const { name, email, password, role, address } = req.body;
@@ -12,13 +13,11 @@ exports.signup = async (req, res) => {
     const hashed = await bcrypt.hash(password, 10);
     const newUser = await User.create({ name, email, password: hashed, address, role });
 
-    
-
-    const cart = await Cart.findOne({ user: newUser._id }).populate('items');
-    await cart.save();
+    await Cart.create({ user: newUser._id, items: [] });
 
     res.status(201).json({ message: "User created", user: newUser });
   } catch (e) {
+    console.error("Signup error:", e);
     res.status(500).json({ error: e.message });
   }
 };
@@ -26,6 +25,7 @@ exports.signup = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  console.log("Login attempt with email:", email, "and password:", password );
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) return res.status(400).json({ message: "No user found" });

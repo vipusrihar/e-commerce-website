@@ -144,12 +144,12 @@ const  NavBar = () => {
 
           {/* User avatar and dropdown menu */}
           <Box sx={{ flexGrow: 0 }}>
-            {auth?.user ? (
+            {auth?.selectedUser ? (
               <>
-              {console.log(auth?.user?.name)}
+              {console.log(auth?.selectedUser?.name)}
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={auth.user.name} src="/static/images/avatar/2.jpg" />
+                    <Avatar alt={auth.selectedUser.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
                   </IconButton>
                 </Tooltip>
                 <Menu
