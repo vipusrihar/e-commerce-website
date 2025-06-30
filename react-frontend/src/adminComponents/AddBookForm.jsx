@@ -8,15 +8,25 @@ import {
   Select,
   MenuItem,
   FormControl,
+  Grid,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { uploadImageToCloudinary } from '../utils/uploadImageToCloudinary';
 
-const AddBookForm = ({ onClose }) => {
+const AddBookForm = ({ onClose, onSubmit }) => {
+  const [uploadImage, setUploadImage] = useState(false);
+
   const [form, setForm] = useState({
     title: '',
     author: '',
     isbn: '',
     category: '',
+    image: '',
+    description: '',
+    stock: '',
+    price: '',
   });
 
   const handleChange = (e) => {
@@ -26,14 +36,38 @@ const AddBookForm = ({ onClose }) => {
     });
   };
 
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    setUploadImage(true);
+    const imageUrl = await uploadImageToCloudinary(file);
+    setForm(prev => ({ ...prev, image: imageUrl }));
+    setUploadImage(false);
+  };
+
   const handleSubmit = () => {
-   
-    console.log('New Book:', form);
-    onClose();
+    const { title, author, isbn, category, stock, price } = form;
+    if (title && author && isbn && category && stock && price) {
+      onSubmit(form); // Pass the form to parent
+      onClose(); // Close the form
+    } else {
+      alert("Please fill in all required fields.");
+    }
   };
 
   return (
-    <Box sx={{ padding: 3, width: 400 }}>
+    <Box
+      sx={{
+        padding: 3,
+        width: 500,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#FFF3E0',
+        borderRadius: 2,
+        boxShadow: 3,
+        height: 'auto',
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -50,6 +84,38 @@ const AddBookForm = ({ onClose }) => {
         </Button>
       </Box>
 
+      {/* Image Upload */}
+      <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+        <input
+          accept="image/*"
+          id="fileInput"
+          style={{ display: 'none' }}
+          type="file"
+          onChange={handleImageChange}
+        />
+        <label htmlFor="fileInput">
+          <span className="w-24 h-25 cursor-pointer flex items-center justify-center p-3 border rounded-md border-gray-600">
+            <AddPhotoAlternateIcon />
+          </span>
+          {uploadImage && (
+            <div className="absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex justify-center items-center">
+              <CircularProgress />
+            </div>
+          )}
+        </label>
+      </Grid>
+
+      {/* Image Preview */}
+      {form.image && (
+        <Box sx={{ mb: 2 }}>
+          <img
+            src={form.image}
+            alt="Book Cover"
+            style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
+          />
+        </Box>
+      )}
+
       {/* Form Fields */}
       <TextField
         fullWidth
@@ -61,7 +127,6 @@ const AddBookForm = ({ onClose }) => {
         sx={{ mb: 1 }}
         required
       />
-
       <TextField
         fullWidth
         label="Author"
@@ -72,7 +137,6 @@ const AddBookForm = ({ onClose }) => {
         sx={{ mb: 1 }}
         required
       />
-
       <TextField
         fullWidth
         label="ISBN"
@@ -95,11 +159,47 @@ const AddBookForm = ({ onClose }) => {
           label="Category"
           required
         >
-          <MenuItem value={'fiction'}>Fiction</MenuItem>
-          <MenuItem value={'non-fiction'}>Non-fiction</MenuItem>
-          <MenuItem value={'biography'}>Biography</MenuItem>
+          <MenuItem value="fiction">Fiction</MenuItem>
+          <MenuItem value="non-fiction">Non-fiction</MenuItem>
+          <MenuItem value="biography">Biography</MenuItem>
         </Select>
       </FormControl>
+
+      <TextField
+        fullWidth
+        label="Description"
+        name="description"
+        value={form.description}
+        onChange={handleChange}
+        variant="outlined"
+        multiline
+        rows={3}
+        sx={{ mb: 1 }}
+      />
+
+      <TextField
+        fullWidth
+        label="Stock"
+        name="stock"
+        type="number"
+        value={form.stock}
+        onChange={handleChange}
+        variant="outlined"
+        sx={{ mb: 1 }}
+        required
+      />
+
+      <TextField
+        fullWidth
+        label="Price"
+        name="price"
+        type="number"
+        value={form.price}
+        onChange={handleChange}
+        variant="outlined"
+        sx={{ mb: 2 }}
+        required
+      />
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button

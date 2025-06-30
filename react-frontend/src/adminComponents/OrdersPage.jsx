@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Chip,
-  Button,
-  Menu,
-  MenuItem
+  Box, Typography, Paper, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Chip, Button, Menu, MenuItem
 } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllOrders } from '../state/order/Action';
 
 const columns = [
   { id: 'orderId', label: 'Order ID', minWidth: 100 },
@@ -21,15 +12,6 @@ const columns = [
   { id: 'date', label: 'Date', minWidth: 120 },
   { id: 'total', label: 'Total ($)', minWidth: 100 },
   { id: 'status', label: 'Status', minWidth: 150 },
-];
-
-const initialRows = [
-  { orderId: 'ORD001', user: 'Alice Johnson', date: '2025-06-25', total: 59.99, status: 'Delivered' },
-  { orderId: 'ORD002', user: 'Bob Smith', date: '2025-06-26', total: 34.50, status: 'Pending' },
-  { orderId: 'ORD003', user: 'Charlie Davis', date: '2025-06-26', total: 75.00, status: 'Shipped' },
-  { orderId: 'ORD004', user: 'Diana Green', date: '2025-06-27', total: 22.99, status: 'Cancelled' },
-  { orderId: 'ORD005', user: 'Ethan Brown', date: '2025-06-27', total: 49.90, status: 'Delivered' },
-  { orderId: 'ORD006', user: 'Fiona Adams', date: '2025-06-27', total: 64.75, status: 'Pending' },
 ];
 
 const getStatusColor = (status) => {
@@ -43,9 +25,22 @@ const getStatusColor = (status) => {
 };
 
 const OrdersPage = () => {
-  const [orders, setOrders] = useState(initialRows);
+  const dispatch = useDispatch();
+  const ordersFromStore = useSelector((store) => store.orders.orders);
+
+  const [orders, setOrders] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  useEffect(() => {
+    dispatch(getAllOrders());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (ordersFromStore) {
+      setOrders(ordersFromStore);
+    }
+  }, [ordersFromStore]);
 
   const handleOpenMenu = (event, orderId) => {
     setAnchorEl(event.currentTarget);
@@ -69,7 +64,7 @@ const OrdersPage = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography align="center" gutterBottom variant="h4" sx={{ color: '#78350F' , fontWeight:'bold'}}>
+      <Typography align="center" gutterBottom variant="h4" sx={{ color: '#78350F', fontWeight: 'bold' }}>
         ORDERS
       </Typography>
 
