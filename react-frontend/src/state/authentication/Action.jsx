@@ -1,10 +1,7 @@
 import {
-  loginStart,
-  loginFailure,
-  loginSuccess,
-  registerStart,
-  registerSuccess,
-  registerFailure
+  loginStart,  loginFailure,  loginSuccess,
+  registerStart,  registerSuccess,  registerFailure,
+  logout
 } from "./authSlice";
 import { API_URL } from "../../config/API";
 import axios from "axios";
@@ -22,6 +19,8 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
     } else {
       navigate("/dashboard");
     }
+    localStorage.setItem("token", response.data.token);
+    alert("Login successful!");
   } catch (error) {
     const message = error.response?.data?.message || "Login failed. Please try again.";
     dispatch(loginFailure(message));
@@ -45,3 +44,10 @@ export const registerUser = (userData, navigate) => async (dispatch) => {
     alert(message);
   }
 };
+
+export const logoutUser = (navigate) => async (dispatch) => {
+  localStorage.removeItem("token");
+  dispatch(logout());
+  alert("You have been logged out.");
+  navigate("/");
+}

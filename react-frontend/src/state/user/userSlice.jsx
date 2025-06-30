@@ -1,0 +1,67 @@
+import { createSlice } from "@reduxjs/toolkit"
+
+const initialValues = {
+    users : [],
+    isLoading : false,
+    error : null,
+    success : null
+}
+
+const userSlice = createSlice({
+    name : 'user',
+    initialState : initialValues,
+    reducers : {
+        getAllUsersStart: (state) => {
+            state.isLoading = true;
+            state.error = null;
+        },
+        getAllUsersSuccess: (state, action) => {
+            state.isLoading = false;
+            state.users = action.payload.users;
+            state.success = true;
+        },
+        getAllUsersFailure: (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            state.success = false;
+        },
+        updateUserStart: (state) => {
+            state.isLoading = true;
+            state.error = null;
+        },
+        updateUserSuccess : (state, action) => {
+            state.isLoading = false,
+            state.users = state.users.map(user => 
+                user._id === action.payload.user._id ? action.payload.user : user
+            );
+            state.success = true;
+        },
+        updateUserFailure: (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            state.success = false;
+        },
+        deleteUserStart: (state) => {
+            state.isLoading = true;
+            state.error = null;
+        },
+        deleteUserSuccess: (state, action) => {
+            state.isLoading = false;
+            state.users = state.users.filter(user => user._id !== action.payload.userId);
+            state.success = true;
+        },
+        deleteUserFailure: (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            state.success = false;
+        },
+    }
+})
+
+export const {
+    getAllUsersStart, getAllUsersSuccess, getAllUsersFailure,
+    updateUserStart, updateUserSuccess, updateUserFailure,
+    deleteUserStart, deleteUserSuccess, deleteUserFailure
+} = userSlice.actions; 
+
+export default userSlice.reducer;
