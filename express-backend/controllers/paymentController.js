@@ -1,3 +1,5 @@
+// just create for now will be develop later
+
 const Payment = require('../models/Payment');
 
 // Create a new payment
@@ -56,13 +58,13 @@ exports.updatePaymentStatus = async (req, res) => {
   }
 };
 
-// Delete payment by ID
-exports.deletePayment = async (req, res) => {
-  try {
-    const payment = await Payment.findByIdAndDelete(req.params.id);
-    if (!payment) return res.status(404).json({ message: 'Payment not found' });
-    res.status(200).json({ message: 'Payment deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+// // Delete payment by ID
+// exports.deletePayment = async (req, res) => {
+//   try {
+//     const payment = await Payment.findByIdAndDelete(req.params.id);
+//     if (!payment) return res.status(404).json({ message: 'Payment not found' });
+//     res.status(200).json({ message: 'Payment deleted successfully' });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };

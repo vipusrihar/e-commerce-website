@@ -31,9 +31,8 @@ app.use('/api/users/:userId/cart', cartRoutes);
 const orderRoutes = require('./routes/orderRoutes');
 app.use('/api/orders',orderRoutes);
 
-
-
-
+const paymentRoutes = require('./routes/paymentRoutes');
+app.use('/api/payment',paymentRoutes);
 
 const reviewRoutes = require('./routes/reviewRoutes');
 app.use('/api/reviews', reviewRoutes);
