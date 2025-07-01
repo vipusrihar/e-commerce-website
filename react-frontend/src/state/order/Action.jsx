@@ -10,15 +10,15 @@ export const getAllOrders = () => async (dispatch) => {
     if (!token) {
         const message = "No authentication token found. Please log in.";
         dispatch(getAllOrdersFailure(message));
-        console.error("Fetch users error:", message);
+        console.error("Fetch orders error:", message);
         return;
     }
-    console.log("Token:", token);
+    console.log("Token is present");
 
     try {
         const response = await api.get(`/orders`, {
             headers: {
-                "Authorization": `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             }
         });
         console.log("Orders fetched :", response.data);
@@ -28,5 +28,33 @@ export const getAllOrders = () => async (dispatch) => {
             error.response?.data?.message || error.message || "Failed to fetch orders";
         dispatch(getAllOrdersFailure(message));
         console.error("Fetch orders error:", message);
+    }
+}
+
+export const getOrderById = (orderId) => async (dispatch) => {
+    dispatch(getAllOrdersStart());
+    console.log("Fetching order by ID:", orderId);
+    const token = localStorage.getItem("token");
+    if (!token) {
+        const message = "No authentication token found. Please log in.";
+        dispatch(getAllOrdersFailure(message));
+        console.error("Fetch order error:", message);
+        return;
+    }
+    console.log("Token is present");
+
+    try {
+        const response = await api.get(`/orders/${orderId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        console.log("Order fetched:", response.data);
+        dispatch(getAllOrdersSuccess({ orders: [response.data] }));
+    } catch (error) {
+        const message =
+            error.response?.data?.message || error.message || "Failed to fetch order";
+        dispatch(getAllOrdersFailure(message));
+        console.error("Fetch order error:", message);
     }
 }

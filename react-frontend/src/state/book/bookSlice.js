@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getBookById } from './Action';
 
 const initialValues = {
     books: [],
@@ -32,10 +33,7 @@ const bookSlice = createSlice({
         },
         getBookByIdSuccess: (state, action) => {
             state.isLoading = false;
-            const book = state.books.find(book => book.id === action.payload.id);
-            if (book) {
-                state.selectedBook = book;
-            }
+            state.selectedBook = action.payload;
             state.success = true;
         },
         getBookByIdFailure: (state, action) => {
@@ -91,7 +89,10 @@ const bookSlice = createSlice({
         clearBookState: (state) => {
             state.isLoading = false;
             state.error = null;
+            state.selectedBook = null;
             state.success = null;
+            // books need even after we logout
+            // state.books = null
         },
         
 
@@ -102,8 +103,10 @@ const bookSlice = createSlice({
 export const {
     addBookFailure, addBookStart, addBookSuccess,
     getAllBooksFailure, getAllBooksStart, getAllBooksSuccess,
-    updateBookFailure, updateBookStart, updateBookSuccess
-
+    updateBookFailure, updateBookStart, updateBookSuccess,
+    getBookByIdFailure, getBookByIdStart, getBookByIdSuccess,
+    deleteBookFailure, deleteBookStart, deleteBookSuccess,
+    clearBookState,
 } = bookSlice.actions;
 
 export default bookSlice.reducer;

@@ -74,12 +74,20 @@ const orderSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
+        clearOrderState: (state) => {
+            state.error = null;
+            state.isLoading = false;
+            state.orders = [],
+            state.selectedOrder = null;
+            state.success = null;
+        }
     },  
 })
 
 export const {
     getAllOrdersFailure,getAllOrdersStart,getAllOrdersSuccess,
-    getOrderByIdStart,getOrderByIdSuccess,getOrderByIdFailure
+    getOrderByIdStart,getOrderByIdSuccess,getOrderByIdFailure,
+    clearOrderState
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

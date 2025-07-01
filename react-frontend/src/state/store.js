@@ -4,16 +4,20 @@ import authSlice from './authentication/authSlice'
 import userSlice from './user/userSlice';
 import bookSlice from './book/bookSlice'
 import orderSlice from './order/orderSlice';
+import reviewSlice from './review/reviewSlice';
+import cartSlice from './cart/carttSlice';
 
 const rootReducer = combineReducers({
-  auth : authSlice,
-  users : userSlice,
-  books : bookSlice,
-  orders : orderSlice
+  auth: authSlice,
+  users: userSlice,
+  books: bookSlice,
+  orders: orderSlice,
+  reviews: reviewSlice,
+  cart: cartSlice,
 })
 
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-  devTools: true, 
+  devTools: true,
 })

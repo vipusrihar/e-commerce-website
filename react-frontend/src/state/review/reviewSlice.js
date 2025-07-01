@@ -11,26 +11,23 @@ const initialValues = {
 const reviewSlice = createSlice({
     name: 'review',
     initialState: initialValues,
-    reducer: {
-        fetchReviewsStart: (state) => {
+    reducers: {
+        getAllReviewsStart: (state) => {
             state.isLoading = true;
             state.error = null;
         },
-        fetchReviewsSuccess: (state, action) => {
+        getAllReviewsSuccess: (state, action) => {
             state.isLoading = false;
-            state.reviews = action.payload;
+            state.reviews = action.payload.reviews;
             state.success = true;
         },
-        fetchReviewsFailure: (state, action) => {
+        getAllReviewsFailure: (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
             state.success = false;
         },
         selectReview: (state, action) => {
             state.selectedReview = action.payload;
-        },
-        clearSelectedReview: (state) => {
-            state.selectedReview = null;
         },
         addReviewStart: (state) => {
             state.isLoading = true;
@@ -77,12 +74,19 @@ const reviewSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
+        clearReviewState: (state) => {
+            state.selectedReview = null;
+            state.isLoading = false;
+            state.error =null;
+            state.reviews = [];
+            state.success = null;
+        },
     }
 });
 
 export const {
-    fetchReviewsStart, fetchReviewsSuccess, fetchReviewsFailure,
-    selectReview, clearSelectedReview,
+    getAllReviewsStart, getAllReviewsSuccess, getAllReviewsFailure,
+    selectReview, clearReviewState,
     addReviewStart, addReviewSuccess, addReviewFailure,
     updateReviewStart, updateReviewSuccess, updateReviewFailure,
     deleteReviewStart, deleteReviewSuccess, deleteReviewFailure 
