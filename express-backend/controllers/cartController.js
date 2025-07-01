@@ -1,10 +1,9 @@
-const Cart = require('../models/Cart');
-const CartItem = require('../models/CartItem');
-
+import CartItem from '../models/CartItem.js';
+import Cart from '../models/Cart.js';
 
 
 // get cart by userId with populated items
-exports.getCartByUserId = async (req, res) => {
+export async function getCartByUserId(req, res) {
     try {
         const cart = await Cart.findOne({ user: req.params.userId }).populate({
             path: 'items',
@@ -15,10 +14,10 @@ exports.getCartByUserId = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
 
-//add Product to Cart
-exports.addProductCartByUserId = async (req, res) => {
+// add Product to Cart
+export async function addProductCartByUserId(req, res) {
     try {
         const { productId, quantity } = req.body;
         if (quantity === 0) {
@@ -28,7 +27,7 @@ exports.addProductCartByUserId = async (req, res) => {
         // Find user's cart and populate items
         const cart = await Cart.findOne({ user: req.params.userId }).populate({
             path: 'items',
-            populate: { path: 'book' } 
+            populate: { path: 'book' }
         });
         if (!cart) return res.status(404).json({ message: 'Cart not found' });
 
@@ -41,7 +40,7 @@ exports.addProductCartByUserId = async (req, res) => {
 
             if (cartItem.quantity <= 0) {
                 // Remove CartItem doc
-                await CartItem.findByIdAndDelete(cartItem._id);
+                await findByIdAndDelete(cartItem._id);
                 // Remove reference from cart.items
                 cart.items = cart.items.filter(item => item._id.toString() !== cartItem._id.toString());
             } else {
@@ -50,11 +49,11 @@ exports.addProductCartByUserId = async (req, res) => {
             }
         } else {
             if (quantity > 0) {
-                //create new CartItem
+                // create new CartItem
                 cartItem = new CartItem({ book: productId, quantity });
                 await cartItem.save();
 
-                //add new item to cart
+                // add new item to cart
                 cart.items.push(cartItem._id);
             } else {
                 return res.status(400).json({ message: "Quantity must be greater than zero to add new product" });
@@ -66,4 +65,9 @@ exports.addProductCartByUserId = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
+}
+
+export default {
+    getCartByUserId,
+    addProductCartByUserId
 };

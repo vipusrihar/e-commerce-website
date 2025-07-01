@@ -1,9 +1,10 @@
 // just create for now will be develop later
 
-const express = require('express');
-const router = express.Router();
-const paymentController = require('../controllers/paymentController');
-const auth = require('../middleware/auth');
+import express from 'express';
+import { Router } from 'express';
+const router = Router();
+import paymentController from '../controllers/paymentController.js';
+import auth from '../middleware/auth.js';
 
 router.post('/',auth,paymentController.createPayment);
 router.get('/payment/:id',auth,paymentController.getPaymentById);
@@ -11,4 +12,4 @@ router.get('/payment/:id',auth,paymentController.getPaymentById);
 router.put('/:userId/status',auth,paymentController.updatePaymentStatus);
 router.get('/order/:orderId',auth,paymentController.getPaymentsByOrderId);
 
-module.exports = router;
+export default  router;

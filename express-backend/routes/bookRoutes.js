@@ -1,14 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const bookController = require('../controllers/bookController');
-const auth = require('../middleware/auth');
+import { Router } from 'express';
+import bookController from '../controllers/bookController.js';
+import auth from '../middleware/auth.js';
 
+const router = Router();
 
 router.post('/', auth, bookController.createBook);
-router.get('/', auth, bookController.findAllBooks);
-router.get('/:id', auth, bookController.findBookById);
-router.get('/ISBN/:isbn', auth, bookController.findBookByISBN)
-router.put('/:id', auth, bookController.updateBook);
-router.delete('/:id', auth, bookController.deleteBook);
+router.get('/ISBN/:isbn', auth, bookController.findBookByISBN); 
+router.get('/:hashid', bookController.findBookById);
+router.put('/:hashid', auth, bookController.updateBook);
+router.delete('/:hashid', auth, bookController.deleteBook);
+router.get('/', bookController.findAllBooks);
 
-module.exports = router;
+export default router;

@@ -1,9 +1,7 @@
-// just create for now will be develop later
-
-const Payment = require('../models/Payment');
+import Payment from '../models/Payment.js';
 
 // Create a new payment
-exports.createPayment = async (req, res) => {
+const createPayment = async (req, res) => {
   try {
     const payment = new Payment(req.body);
     await payment.save();
@@ -14,7 +12,7 @@ exports.createPayment = async (req, res) => {
 };
 
 // Get payment by ID with populated order info
-exports.getPaymentById = async (req, res) => {
+const getPaymentById = async (req, res) => {
   try {
     const payment = await Payment.findById(req.params.id).populate('order');
     if (!payment) return res.status(404).json({ message: 'Payment not found' });
@@ -25,7 +23,7 @@ exports.getPaymentById = async (req, res) => {
 };
 
 // Get all payments for a specific order
-exports.getPaymentsByOrderId = async (req, res) => {
+const getPaymentsByOrderId = async (req, res) => {
   try {
     const payments = await Payment.find({ order: req.params.orderId }).populate('order');
     res.status(200).json(payments);
@@ -35,7 +33,7 @@ exports.getPaymentsByOrderId = async (req, res) => {
 };
 
 // Update payment status (e.g. pending, completed, failed, refunded)
-exports.updatePaymentStatus = async (req, res) => {
+const updatePaymentStatus = async (req, res) => {
   try {
     const { paymentStatus } = req.body;
     const validStatuses = ['pending', 'completed', 'failed', 'refunded'];
@@ -58,8 +56,8 @@ exports.updatePaymentStatus = async (req, res) => {
   }
 };
 
-// // Delete payment by ID
-// exports.deletePayment = async (req, res) => {
+// // Delete payment by ID (optional)
+// const deletePayment = async (req, res) => {
 //   try {
 //     const payment = await Payment.findByIdAndDelete(req.params.id);
 //     if (!payment) return res.status(404).json({ message: 'Payment not found' });
@@ -68,3 +66,11 @@ exports.updatePaymentStatus = async (req, res) => {
 //     res.status(500).json({ message: err.message });
 //   }
 // };
+
+export default {
+  createPayment,
+  getPaymentById,
+  getPaymentsByOrderId,
+  updatePaymentStatus,
+  // deletePayment  
+};

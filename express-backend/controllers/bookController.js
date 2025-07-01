@@ -1,7 +1,8 @@
-const Book = require('../models/Book');
+import Book from '../models/Book.js';
+import hashids from '../utils/hashid.js';
 
 // CREATE a new book
-exports.createBook = async (req, res) => {
+const createBook = async (req, res) => {
     try {
         const { title, author, isbn, description, price, category, image, stock } = req.body;
 
@@ -25,19 +26,28 @@ exports.createBook = async (req, res) => {
 };
 
 // GET all books
-exports.findAllBooks = async (req, res) => {
+const findAllBooks = async (req, res) => {
     try {
         const books = await Book.find().populate('reviews');
-        res.status(200).json(books);
+        const response = books.map(book => ({
+            ...book.toObject(),
+            hashid: hashids.encodeHex(book._id.toString()),
+        }));
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
 // GET a single book by ID
-exports.findBookById = async (req, res) => {
+const findBookById = async (req, res) => {
     try {
-        const book = await Book.findById(req.params.id).populate('reviews');
+        const hashid = req.params.hashid;
+        const decodedId = hashids.decodeHex(hashid);
+        if (!decodedId) {
+            return res.status(404).json({ message: 'Invalid link' });
+          }
+        const book = await Book.findById(decodedId).populate('reviews');
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
@@ -48,9 +58,9 @@ exports.findBookById = async (req, res) => {
 };
 
 // GET a single book by ISBN
-exports.findBookByISBN = async (req, res) => {
+const findBookByISBN = async (req, res) => {
     try {
-        const book = await Book.findOne({isbn : req.params.isbn});
+        const book = await Book.findOne({ isbn: req.params.isbn });
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
@@ -61,11 +71,16 @@ exports.findBookByISBN = async (req, res) => {
 };
 
 // UPDATE a book
-exports.updateBook = async (req, res) => {
+const updateBook = async (req, res) => {
     try {
-        const updated = await Book.findByIdAndUpdate(req.params.id, req.body, {
+        const decodedId = hashids.decodeHex(req.params.hashid);
+        if (!decodedId) {
+            return res.status(400).json({ message: 'Invalid ID' });
+        }
+
+        const updated = await Book.findByIdAndUpdate(decodedId, req.body, {
             new: true,
-            runValidators: true  // Makes sure the update follows the validation rules from your Mongoose schema.
+            runValidators: true
         });
         if (!updated) {
             return res.status(404).json({ message: 'Book not found' });
@@ -77,9 +92,14 @@ exports.updateBook = async (req, res) => {
 };
 
 // DELETE a book
-exports.deleteBook = async (req, res) => {
+const  deleteBook = async (req, res) => {
     try {
-        const deleted = await Book.findByIdAndDelete(req.params.id);
+        const decodedId = hashids.decodeHex(req.params.hashid);
+        if (!decodedId) {
+            return res.status(400).json({ message: 'Invalid ID' });
+        }
+
+        const deleted = await Book.findByIdAndDelete(decodedId);
         if (!deleted) {
             return res.status(404).json({ message: 'Book not found' });
         }
@@ -88,3 +108,12 @@ exports.deleteBook = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+export default {
+    createBook,
+    findAllBooks,
+    findBookById,
+    findBookByISBN,
+    updateBook,
+    deleteBook
+};  

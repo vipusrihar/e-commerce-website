@@ -1,15 +1,15 @@
-const Review = require('../models/Review');
+import Review from '../models/Review.js';
 
 //create a new review
-exports.createReview = async (req, res) => {
+export async function createReview(req, res) {
     try {
         const { review, rating, book } = req.body;
 
-        const newReview = await Review.create({
+        const newReview = await create({
             review,
             rating,
             book,
-            user: req.user.id  // assuming you're using auth middleware
+            user: req.user.id  
         });
 
         res.status(201).json(newReview);
@@ -19,12 +19,12 @@ exports.createReview = async (req, res) => {
         }
         res.status(500).json({ message: err.message });
     }
-};
+}
 
 //get all reviews
-exports.getAllReviews = async (req, res) => {
+export async function getAllReviews(req, res) {
     try {
-        const reviews = await Review.find()
+        const reviews = await find()
             .populate('user', 'name')
             .populate('book', 'title');
 
@@ -32,24 +32,25 @@ exports.getAllReviews = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
 
 //get reviews by book ID
-exports.getReviewsByBook = async (req, res) => {
+export async function getReviewsByBook(req, res) {
     try {
-        const reviews = await Review.find({ book: req.params.bookId })
+        const reviews = await find({ book: req.params.bookId })
+            .populate('book', 'title')
             .populate('user', 'name');
 
         res.status(200).json(reviews);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
 
 // Update a review (only if it's the user’s own review)
-exports.updateReview = async (req, res) => {
+export async function updateReview(req, res) {
     try {
-        const review = await Review.findOneAndUpdate(
+        const review = await findOneAndUpdate(
             { _id: req.params.id, user: req.user.id },
             req.body,
             { new: true, runValidators: true }
@@ -61,12 +62,31 @@ exports.updateReview = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
+
+
+export async function getReviewsByUser(req, res) {
+    try {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const reviews = await find({ user: userId })
+            .populate('user', 'name')   
+            .populate('book', 'title'); 
+
+        res.status(200).json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 // Delete a review (only if it's the user’s own review)
-exports.deleteReview = async (req, res) => {
+export async function deleteReview(req, res) {
     try {
-        const deleted = await Review.findOneAndDelete({
+        const deleted = await findOneAndDelete({
             _id: req.params.id,
             user: req.user.id
         });
@@ -77,4 +97,13 @@ exports.deleteReview = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
+}
+
+export default {
+    createReview,
+    getAllReviews,
+    getReviewsByBook,
+    updateReview,
+    getReviewsByUser,
+    deleteReview
 };

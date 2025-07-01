@@ -1,10 +1,15 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import slugify from '../utils/slugify.js'; 
 
 const bookSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, 'Title is important'],
         trim: true
+    },
+    slug :{
+        type: String,
+        unique: true,  
     },
     author: {
         type: String,
@@ -45,6 +50,13 @@ const bookSchema = new mongoose.Schema({
 bookSchema.set('toJSON', { virtuals: true });
 bookSchema.set('toObject', { virtuals: true });
 
+bookSchema.pre('save', function (next) {
+    if (!this.slug && this.title) {
+        this.slug = slugify(this.title);
+    }
+    next();
+});
+
 
 bookSchema.virtual('reviews', {
     ref: 'Review',         // the model to link to
@@ -55,4 +67,4 @@ bookSchema.virtual('reviews', {
 
 
 const Book = mongoose.model('Book', bookSchema);
-module.exports = Book;
+export default Book;

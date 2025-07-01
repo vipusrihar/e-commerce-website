@@ -1,67 +1,64 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const Cart = require('../models/Cart');
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import Cart from '../models/Cart.js';
 
-//get all Users (admin only)
-exports.findAllUsers = async (req, res) => {
+// Get all users (admin only)
+export async function findAllUsers(req, res) {
     try {
-        const users = await User.find().select('-password');
+        const users = await User.find().select('-password');  // Use User model here
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
 
-//get one user
-exports.findUserById = async (req, res) => {
+// Get one user by ID
+export async function findUserById(req, res) {
     try {
-        const user = await User.findById(req.params.id).select('-password');
+        const user = await User.findById(req.params.id).select('-password');  // Use User model here
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const cart = await Cart.findOne({ user: user._id }).populate('items');
-                res.status(200).json({
+        const cart = await Cart.findOne({ user: user._id }).populate('items');  // Use Cart model here
+        res.status(200).json({
             message: 'User fetched successfully',
-            user: user,
-            cart: cart
+            user,
+            cart
         });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
 
-exports.findUserByEmail = async (req, res) => {
+// Get user by email
+export async function findUserByEmail(req, res) {
     try {
-        const user = await User.findOne({ email: req.params.email }).select('-password');
+        const user = await User.findOne({ email: req.params.email }).select('-password');  // Use User model here
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.status(200).json(user);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-};
+}
 
-
-
-//update User
-exports.updateUser = async (req, res) => {
+// Update user
+export async function updateUser(req, res) {
     try {
-        console.log(req.params.id)
-        const updated = await User.findByIdAndUpdate(req.params.id, req.body,{
+        const updated = await User.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
-            runValidators : true
+            runValidators: true
         });
-        if(!updated) {
-            return res.status(404).json({message: 'User Not Found'});
+        if (!updated) {
+            return res.status(404).json({ message: 'User Not Found' });
         }
         res.status(200).json(updated);
     } catch (err) {
-        res.status(400).json({message : err.message});
+        res.status(400).json({ message: err.message });
     }
 }
 
-
-//delete User
-exports.deleteUser = async (req, res) => {
+// Delete user
+export async function deleteUser(req, res) {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if (!deletedUser) {
@@ -71,4 +68,12 @@ exports.deleteUser = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
+}
+
+export default {
+    findAllUsers,
+    findUserById,
+    findUserByEmail,
+    updateUser,
+    deleteUser
 };

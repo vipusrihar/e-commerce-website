@@ -1,9 +1,11 @@
-const express = require('express');
-const cartController = require('../controllers/cartCantroller');
-const auth = require('../middleware/auth');
-const router = express.Router({ mergeParams: true }); 
+import express from 'express'; 
+import cartController from '../controllers/cartController.js';
+import auth from '../middleware/auth.js';
+import { Router } from 'express';
+
+const router = Router();
 
 router.post('/addProduct', auth, cartController.addProductCartByUserId);
-router.get('/getCart', auth, cartController.getCartByUserId)
+router.get('/getCart', auth, cartController.getCartByUserId);
 
-module.exports = router;
+export default router;

@@ -1,7 +1,8 @@
-const express = require('express');
-const router = express.Router();
-const orderController = require('../controllers/orderController');
-const auth = require('../middleware/auth');
+import express from 'express';
+import { Router } from 'express';
+const router = Router();
+import orderController from '../controllers/orderController.js';
+import auth from '../middleware/auth.js';
 
 
 router.post('/',auth,orderController.createOrder);
@@ -12,4 +13,4 @@ router.put('/:id',auth,orderController.updateOrderStatus);
 router.delete('/:id',auth,orderController.deleteOrder);
 
 
-module.exports = router;
+export default  router;
