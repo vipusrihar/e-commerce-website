@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: './config/config.env' });
+
 import express from 'express';
 import cors from 'cors';
-import { config } from 'dotenv';
 import connectDB from './config/db.js';
+
 
 import authRoutes from './routes/auth.js';
 import auth from './middleware/auth.js';
@@ -13,7 +16,7 @@ import orderRoutes from './routes/orderRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 
-config({ path: './config/config.env' });
+
 connectDB();
 
 const app = express();

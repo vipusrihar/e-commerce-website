@@ -1,5 +1,20 @@
 import Hashids from 'hashids';
 
-const hashids = new Hashids(process.env.HASHID_SALT || 'default-salt', 10);
+const salt = process.env.HASHID_SALT || 'some-secure-random-string';
 
-export default hashids;
+const hashids = new Hashids(salt, 10);
+
+function encodeId(hexId) {
+  return hashids.encodeHex(hexId);
+}
+
+function decodeId(hashid) {
+  return hashids.decodeHex(hashid);
+}
+
+export default {
+  encodeId,
+  decodeId,
+  instance: hashids,
+};
+

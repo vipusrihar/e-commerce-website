@@ -31,7 +31,7 @@ const findAllBooks = async (req, res) => {
         const books = await Book.find().populate('reviews');
         const response = books.map(book => ({
             ...book.toObject(),
-            hashid: hashids.encodeHex(book._id.toString()),
+            hashid: hashids.encodeId(book._id.toString()),
         }));
         res.status(200).json(response);
     } catch (err) {
@@ -43,19 +43,28 @@ const findAllBooks = async (req, res) => {
 const findBookById = async (req, res) => {
     try {
         const hashid = req.params.hashid;
-        const decodedId = hashids.decodeHex(hashid);
-        if (!decodedId) {
+        const realId = hashids.decodeId(hashid); 
+
+        console.log("Hashid:", hashid);
+        console.log("Decoded ObjectId:", realId);
+
+        if (!realId) {
             return res.status(404).json({ message: 'Invalid link' });
-          }
-        const book = await Book.findById(decodedId).populate('reviews');
+        }
+
+        const book = await Book.findById(realId).populate('reviews');
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
+
         res.status(200).json(book);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error("Error in findBookById:", err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+
 
 // GET a single book by ISBN
 const findBookByISBN = async (req, res) => {

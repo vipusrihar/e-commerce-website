@@ -4,6 +4,7 @@ import SignupPage from "./pages/SignupPage";
 import HomePage from "./pages/HomePage";
 import NavBar from "./components/NavBar";
 import AdminPage from "./pages/AdminPage";
+import BookDetails from "./components/BookDetails";
 
 function AppContent() {
   const location = useLocation();
@@ -17,6 +18,7 @@ function AppContent() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<HomePage />} />
+        <Route path="/book/:hashid" element={<BookDetails/>} />
         {/* Nested Admin Routes */}
         <Route path="/adminDashboard/*" element={<AdminPage />}>
         </Route>

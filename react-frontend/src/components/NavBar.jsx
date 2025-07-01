@@ -15,7 +15,9 @@ import { styled, alpha } from '@mui/material/styles';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import { useNavigate } from 'react-router-dom';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '../state/authentication/Action';
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -62,13 +64,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
-const  NavBar = () => {
+const NavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
-
   const auth = useSelector((state) => state.auth);
-  console.log("store:", auth);
-
+  const dispatch = useDispatch();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -79,9 +79,29 @@ const  NavBar = () => {
   };
 
   const handleLogin = () => {
-    navigate("/login")
+    navigate("/login");
+  };
 
-  }
+  const handleMenuClick = (setting) => {
+    handleCloseUserMenu();
+
+    switch (setting) {
+      case "Profile":
+        navigate("/profile");
+        break;
+      case "Account":
+        navigate("/account");
+        break;
+      case "Dashboard":
+        navigate("/dashboard");
+        break;
+      case "Logout":
+        dispatch(logoutUser(navigate));
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#A47864' }}>
@@ -105,7 +125,6 @@ const  NavBar = () => {
             BOOKTOWN
           </Typography>
 
-          {/* Logo for small screens (centered) */}
           <Typography
             variant="h5"
             noWrap
@@ -125,65 +144,70 @@ const  NavBar = () => {
             BOOKTOWN
           </Typography>
 
-          {/* Search bar (visible on large screens) */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search>
-          </Box>
+          <Box sx={{ justifyContent: 'space-between', flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}>
+            {(window.location.pathname === '/' || window.location.pathname === '/dashboard') && (
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', } }}>
+                <Search>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                  />
+                </Search>
+              </Box>
 
-          <Box sx={{ paddingRight: 2 }}>
-            <ShoppingCartRoundedIcon sx={{ width: 40, height: 40 }} />
-          </Box>
-
-          {/* User avatar and dropdown menu */}
-          <Box sx={{ flexGrow: 0 }}>
-            {auth?.selectedUser ? (
-              <>
-              {console.log(auth?.selectedUser?.name)}
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={auth.selectedUser.name.toUpperCase()} src="/static/images/avatar/2.jpg" />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </>
-            ) : (
-              <NoAccountsIcon style={{ height: 40, width: 40 }} onClick={() => handleLogin()} />
             )}
-          </Box>
 
+
+            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ paddingRight: 2 }}>
+                <ShoppingCartRoundedIcon sx={{ width: 40, height: 40 }} />
+              </Box>
+
+              <Box sx={{ flexGrow: 0 }}>
+                {auth?.selectedUser ? (
+                  <>
+                    <Tooltip title="Open settings">
+                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar alt={auth.selectedUser.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ mt: '45px' }}
+                      id="menu-appbar"
+                      anchorEl={anchorElUser}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      open={Boolean(anchorElUser)}
+                      onClose={handleCloseUserMenu}
+                    >
+                      {settings.map((setting) => (
+                        <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
+                          <Typography textAlign="center">{setting}</Typography>
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </>
+                ) : (
+                  <NoAccountsIcon style={{ height: 40, width: 40 }} onClick={handleLogin} />
+                )}
+              </Box>
+            </Box>
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
 
 export default NavBar;
