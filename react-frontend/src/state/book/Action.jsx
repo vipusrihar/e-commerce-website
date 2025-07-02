@@ -32,27 +32,31 @@ export const createBook = (bookData) => async (dispatch) => {
     }
 };
 
-export const updateBook = (bookId, bookData) => async (dispatch) => {
+export const updateBook = (hashid, bookData) => async (dispatch) => {
     dispatch(updateBookStart());
-    console.log("Fetching books....");
+    console.log("Fetching books....", hashid);
+    console.log("Book data to update:", bookData);
     try {
-        const response = await fetch(`${API_URL}/books/${bookId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(bookData)
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to update book');
+        const token = localStorage.getItem('token');
+        console.log("Token:", token);
+        if (!token) {
+            throw new Error('User is not authenticated');
         }
-
-        const data = await response.json();
+        const response = await axios.put(`${API_URL}/books/${hashid}`,bookData, 
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+          
+        console.log("Update response:", response);  
+        const data = response.data;
         dispatch(updateBookSuccess(data));
         alert('Book updated successfully!');
     } catch (error) {
+        console.error("Update book error:", error.message);
         dispatch(updateBookFailure(error.message));
         alert(`Error updating book: ${error.message}`);
     }
@@ -96,21 +100,16 @@ export const getBookById = (hashid) => async (dispatch) => {
     }
 };
 
-export const deleteBookById = (bookid) => async (dispatch) => {
+export const deleteBookById = (hashid) => async (dispatch) => {
     dispatch(deleteBookStart());
-    console.log("Deleting book with ID:", bookid);
+    console.log("Deleting book with ID:", hashid);
     try {
-        const response = await fetch(`${API_URL}/books/${bookid}`, {
+        const response = await fetch(`${API_URL}/books/${hashid}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to delete book');
-        }
-
         const data = await response.json();
         console.log("Book deleted successfully:", data);
         alert('Book deleted successfully!');

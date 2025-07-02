@@ -61,10 +61,8 @@ const bookSlice = createSlice({
         },
         updateBookSuccess: (state, action) => {
             state.isLoading = false;
-            const index = state.books.findIndex(book => book.id === action.payload.id);
-            if (index !== -1) {
-                state.books[index] = action.payload;
-            }
+            state.books = state.books.map(book =>
+                book._id === action.payload._id ? action.payload : book);
             state.success = true;
         },
         updateBookFailure: (state, action) => {

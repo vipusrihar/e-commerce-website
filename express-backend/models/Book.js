@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import slugify from '../utils/slugify.js'; 
+import slugify from '../utils/slugify.js';
 
 const bookSchema = new mongoose.Schema({
     title: {
@@ -7,9 +7,9 @@ const bookSchema = new mongoose.Schema({
         required: [true, 'Title is important'],
         trim: true
     },
-    slug :{
+    slug: {
         type: String,
-        unique: true,  
+        unique: true,
     },
     author: {
         type: String,
@@ -32,7 +32,13 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A book must belong to a category'],
         enum: {
-            values: ['fiction', 'non-fiction', 'biography', 'children', 'science', 'history', 'fantasy', 'romance', 'self-help'],
+            values: [
+                'fiction', 'non-fiction', 'romance', 'thriller', 'mystery', 'fantasy',
+                'science', 'history', 'biography', 'self-help', 'education', 'children',
+                'young-adult', 'spirituality', 'philosophy', 'memoir', 'classic', 'poetry',
+                'sinhala-literature', 'tamil-literature', 'sri-lankan-history'
+            ]
+            ,
             message: 'Category is either: fiction, non-fiction, biography, children, science, history, fantasy, romance'
         }
     },

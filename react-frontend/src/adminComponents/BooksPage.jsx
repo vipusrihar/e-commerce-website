@@ -7,19 +7,24 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import AddBookForm from './AddBookForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllBooks } from '../state/book/Action';
+import { createBook, deleteBookById, getAllBooks, updateBook } from '../state/book/Action';
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 50 },
-  { id: 'title', label: 'Title', minWidth: 150 },
-  { id: 'author', label: 'Author', minWidth: 120 },
-  { id: 'description', label: 'Description' },
+  { id: 'isbn', label: 'ISBN', minWidth: 100 },
+  { id: 'title', label: 'Title', minWidth: 80 },
+  { id: 'author', label: 'Author', minWidth: 80 },
+  { id: 'category', label: 'Category', minWidth: 80 },
+  { id: 'stock', label: 'Stock', minWidth: 40 },
+  { id: 'price', label: 'Price', minWidth: 40 },
+
 ];
 
 const BooksPage = () => {
   const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
+  const [editBook, setEditBook] = useState(null);
+
 
   const books = useSelector((state) => state.books.books || []);
 
@@ -28,12 +33,36 @@ const BooksPage = () => {
   }, [dispatch]);
 
   const handleAdd = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setEditBook(null);
+  };
+
 
   const handleAddBook = (newBook) => {
-    setBooks([...books, { ...newBook, id: books.length + 1 }]); // Optional: not used in redux-based flow
+    dispatch(createBook(newBook));
+    alert('Book added successfully!');
     handleClose();
   };
+
+  const handleUpdateBook = (updatedBook) => {
+    dispatch(updateBook(updatedBook.hashid, updatedBook));
+    handleClose();
+  }
+
+  const handleDelete = (hashid) => {
+    console.log("Deleting book with ID:", hashid);
+    if (window.confirm(`Are you sure you want to delete this book?`)) {
+      dispatch(deleteBookById(hashid));
+    }
+  };
+
+
+  const handleEdit = (book) => {
+    setEditBook(book);
+    setOpen(true);
+  };
+
 
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -75,16 +104,20 @@ const BooksPage = () => {
             position: 'absolute',
             top: '50%',
             left: '50%',
-            scrollPaddingTop: 10,
             transform: 'translate(-50%, -50%)',
             bgcolor: 'background.paper',
             boxShadow: 24,
             borderRadius: 2,
           }}
         >
-          <AddBookForm onClose={handleClose} onSubmit={handleAddBook} />
+          <AddBookForm
+            onClose={handleClose}
+            onSubmit={editBook ? handleUpdateBook : handleAddBook}
+            initialData={editBook}
+          />
         </Box>
       </Modal>
+
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 550 }}>
@@ -104,6 +137,11 @@ const BooksPage = () => {
                     {column.label}
                   </TableCell>
                 ))}
+                <TableCell sx={{
+                  fontWeight: 'bold',
+                  color: '#78350F',
+                  backgroundColor: '#FCD34D',
+                }}>Edit/Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -119,6 +157,11 @@ const BooksPage = () => {
                   {columns.map((column) => (
                     <TableCell key={column.id}>{row[column.id]}</TableCell>
                   ))}
+                  <TableCell>
+                    <Button onClick={() => handleEdit(row)}>Edit</Button>
+                    <Button onClick={() => handleDelete(row.hashid)}>Delete</Button>
+
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

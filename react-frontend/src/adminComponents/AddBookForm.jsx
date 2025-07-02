@@ -15,7 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { uploadImageToCloudinary } from '../utils/uploadImageToCloudinary';
 
-const AddBookForm = ({ onClose, onSubmit }) => {
+const AddBookForm = ({ onClose, onSubmit, initialData = null }) => {
   const [uploadImage, setUploadImage] = useState(false);
 
   const [form, setForm] = useState({
@@ -27,6 +27,7 @@ const AddBookForm = ({ onClose, onSubmit }) => {
     description: '',
     stock: '',
     price: '',
+    ...initialData,
   });
 
   const handleChange = (e) => {
@@ -46,10 +47,9 @@ const AddBookForm = ({ onClose, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    const { title, author, isbn, category, stock, price } = form;
-    if (title && author && isbn && category && stock && price) {
-      onSubmit(form); // Pass the form to parent
-      onClose(); // Close the form
+    if (form.title && form.author && form.isbn && form.category && form.stock && form.price) {
+      onSubmit(form);
+      onClose();
     } else {
       alert("Please fill in all required fields.");
     }
@@ -85,7 +85,7 @@ const AddBookForm = ({ onClose, onSubmit }) => {
       </Box>
 
       {/* Image Upload */}
-      <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+      <Grid sx={{ mb: 2 }}>
         <input
           accept="image/*"
           id="fileInput"
@@ -105,7 +105,6 @@ const AddBookForm = ({ onClose, onSubmit }) => {
         </label>
       </Grid>
 
-      {/* Image Preview */}
       {form.image && (
         <Box sx={{ mb: 2 }}>
           <img
@@ -159,9 +158,18 @@ const AddBookForm = ({ onClose, onSubmit }) => {
           label="Category"
           required
         >
-          <MenuItem value="fiction">Fiction</MenuItem>
-          <MenuItem value="non-fiction">Non-fiction</MenuItem>
-          <MenuItem value="biography">Biography</MenuItem>
+          {[
+            'fiction', 'non-fiction', 'romance', 'thriller', 'mystery', 'fantasy',
+            'science', 'history', 'biography', 'self-help', 'education', 'children',
+            'young-adult', 'spirituality', 'philosophy', 'memoir', 'classic', 'poetry',
+            'sinhala-literature', 'tamil-literature', 'sri-lankan-history'
+          ]
+            .map((genre) => (
+              <MenuItem key={genre} value={genre}>
+                {genre.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+              </MenuItem>
+            ))}
+
         </Select>
       </FormControl>
 
@@ -207,7 +215,7 @@ const AddBookForm = ({ onClose, onSubmit }) => {
           onClick={handleSubmit}
           sx={{ backgroundColor: '#D97706', color: 'white' }}
         >
-          Add
+          {initialData ? 'Update Book' : 'Add Book'}
         </Button>
       </Box>
     </Box>

@@ -81,8 +81,11 @@ const findBookByISBN = async (req, res) => {
 
 // UPDATE a book
 const updateBook = async (req, res) => {
+    console.log("Updating book with hashid:", req.params.hashid);
     try {
-        const decodedId = hashids.decodeHex(req.params.hashid);
+        const decodedId = hashids.decodeId(req.params.hashid);
+        console.log("Decoded ID:", decodedId);
+     //   console.log("Request body:", req.body);
         if (!decodedId) {
             return res.status(400).json({ message: 'Invalid ID' });
         }
@@ -103,7 +106,7 @@ const updateBook = async (req, res) => {
 // DELETE a book
 const  deleteBook = async (req, res) => {
     try {
-        const decodedId = hashids.decodeHex(req.params.hashid);
+        const decodedId = hashids.decodeId(req.params.hashid);
         if (!decodedId) {
             return res.status(400).json({ message: 'Invalid ID' });
         }
