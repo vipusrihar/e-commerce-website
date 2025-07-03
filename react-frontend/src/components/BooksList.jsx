@@ -1,19 +1,15 @@
-import React, { useEffect, } from 'react';
+import React, { useEffect, useState, } from 'react';
 import {
-  Box,
-  Chip,
-  Grid,
-  Paper,
-  Typography,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
+  Box,  Chip,  Grid,  Paper,  Typography,
+  IconButton,  Tooltip,} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBooks, getBookById } from '../state/book/Action';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
+import AddToCartModal from './AddToCartModal';
+import { addCartItem } from '../state/cart/Action';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -52,24 +48,43 @@ const Overlay = styled(Box)({
 const BooksList = () => {
   const dispatch = useDispatch();
   const books = useSelector((state) => state.books.books) || [];
+  const userId = useSelector((state) => state.auth.selectedUser?.id) || null;
   const navigation = useNavigate();
 
   useEffect(() => {
     dispatch(getAllBooks());
   }, [dispatch]);
 
+  const handleViewBook = (hashid) => {
+    dispatch(getBookById(hashid));
+    navigation(`/book/${hashid}`);
+  }
+
+  const handleAddToCart = (book) => {
+    setSelectedBook(book);
+    setQuantity(1);
+    if (!userId) {
+      alert("Please login to add items to your cart.");
+      return;
+    }
+    setModalOpen(true);
+  };
+
+  const handleConfirmAddToCart = () => {
+    dispatch(addCartItem(selectedBook._id, quantity, userId));
+    alert("Item added to cart successfully!");
+    console.log("Add to Cart:", selectedBook, quantity);
+    setModalOpen(false);
+  };
+
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+
   return (
     <>
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: 'bold', color: '#78350F' }}
-      >
-        Books
-      </Typography>
-
-      <Box sx={{ flexGrow: 1, padding: 3 }}>
+      <Box sx={{ flexGrow: 1, padding: 4, marginTop:5 }}>
         <Grid container spacing={4}>
           {books.map((book) => (
             <Grid size={3} key={book._id}>
@@ -103,17 +118,12 @@ const BooksList = () => {
                   <Overlay className="overlay">
                     <Tooltip title="View">
                       <IconButton sx={{ color: '#fff', backgroundColor: '#00000088' }}
-                        onClick={() => {
-                          dispatch(getBookById(book.hashid));
-                          console.log(book);
-                          navigation(`/book/${book.hashid}`);
-
-                        }}>
+                        onClick={() => handleViewBook(book.hashid)}>
                         <VisibilityIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Add to Cart">
-                      <IconButton sx={{ color: '#fff', backgroundColor: '#00000088' }}>
+                      <IconButton sx={{ color: '#fff', backgroundColor: '#00000088' }} onClick={() => handleAddToCart(book)}>
                         <ShoppingCartIcon />
                       </IconButton>
                     </Tooltip>
@@ -130,6 +140,19 @@ const BooksList = () => {
           ))}
         </Grid>
       </Box>
+      {
+        userId && (
+          <AddToCartModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            book={selectedBook}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            onConfirm={handleConfirmAddToCart}
+          />
+        ) 
+      }
+
     </>
   );
 };

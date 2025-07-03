@@ -3,7 +3,7 @@ import cartController from '../controllers/cartController.js';
 import auth from '../middleware/auth.js';
 import { Router } from 'express';
 
-const router = Router();
+const router = express.Router({ mergeParams: true });
 
 router.post('/addProduct', auth, cartController.addProductCartByUserId);
 router.get('/getCart', auth, cartController.getCartByUserId);

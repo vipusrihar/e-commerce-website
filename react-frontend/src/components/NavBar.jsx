@@ -13,7 +13,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../state/authentication/Action';
@@ -69,6 +69,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -81,6 +82,12 @@ const NavBar = () => {
   const handleLogin = () => {
     navigate("/login");
   };
+
+  const handleAddCartPage = () => {
+    if (auth?.selectedUser) {
+      navigate("/cart");
+    }
+  }
 
   const handleMenuClick = (setting) => {
     handleCloseUserMenu();
@@ -106,7 +113,8 @@ const NavBar = () => {
   return (
     <AppBar position="static" sx={{ backgroundColor: '#A47864' }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ width: '100%' }}>
+          {/* Left: BOOKTOWN */}
           <Typography
             variant="h6"
             noWrap
@@ -125,85 +133,55 @@ const NavBar = () => {
             BOOKTOWN
           </Typography>
 
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            BOOKTOWN
-          </Typography>
-
-          <Box sx={{ justifyContent: 'space-between', flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}>
-            {(window.location.pathname === '/' || window.location.pathname === '/dashboard') && (
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', } }}>
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
-                  />
-                </Search>
-              </Box>
-
-            )}
-
-
-            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ paddingRight: 2 }}>
-                <ShoppingCartRoundedIcon sx={{ width: 40, height: 40 }} />
-              </Box>
-
-              <Box sx={{ flexGrow: 0 }}>
-                {auth?.selectedUser ? (
-                  <>
-                    <Tooltip title="Open settings">
-                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt={auth.selectedUser.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
-                      </IconButton>
-                    </Tooltip>
-                    <Menu
-                      sx={{ mt: '45px' }}
-                      id="menu-appbar"
-                      anchorEl={anchorElUser}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      open={Boolean(anchorElUser)}
-                      onClose={handleCloseUserMenu}
-                    >
-                      {settings.map((setting) => (
-                        <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
-                          <Typography textAlign="center">{setting}</Typography>
-                        </MenuItem>
-                      ))}
-                    </Menu>
-                  </>
-                ) : (
-                  <NoAccountsIcon style={{ height: 40, width: 40 }} onClick={handleLogin} />
-                )}
-              </Box>
+          {/* Center: Conditionally show search */}
+          {(location.pathname === '/' || location.pathname === '/dashboard') && (
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+              </Search>
             </Box>
+          )}
+
+          {/* Right: Always show user/cart section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+            {auth?.selectedUser ? (
+              <>
+                <Box sx={{ paddingRight: 2 }}>
+                <IconButton onClick={() => handleAddCartPage()}>
+                    <ShoppingCartRoundedIcon sx={{ width: 40, height: 40, color:'white' }}  />
+                </IconButton>
+                </Box>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt={auth.selectedUser.name?.toUpperCase()} src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  keepMounted
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            ) : (
+              <NoAccountsIcon style={{ height: 40, width: 40 }} onClick={handleLogin} />
+            )}
           </Box>
         </Toolbar>
+
       </Container>
     </AppBar>
   );
