@@ -30,6 +30,7 @@ app.get('/api/protected', auth, (req, res) => {
   res.json({ message: 'This is protected data.', user: req.user });
 });
 
+
 app.use('/api/books', bookRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/users/:userId/cart', cartRoutes);

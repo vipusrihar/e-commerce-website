@@ -21,7 +21,7 @@ const bookSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'Description is imporatnt']
+        required: [true, 'Description is important']
     },
     price: {
         type: Number,
@@ -39,7 +39,8 @@ const bookSchema = new mongoose.Schema({
                 'sinhala-literature', 'tamil-literature', 'sri-lankan-history'
             ]
             ,
-            message: 'Category is either: fiction, non-fiction, biography, children, science, history, fantasy, romance'
+          message: 'Category must be one of: fiction, non-fiction, romance, thriller, mystery, fantasy, science, history, biography, self-help, education, children, young-adult, spirituality, philosophy, memoir, classic, poetry, sinhala-literature, tamil-literature, sri-lankan-history'
+
         }
     },
     image: {
@@ -51,7 +52,7 @@ const bookSchema = new mongoose.Schema({
         required: [true, 'Stock quantity is must'],
         min: [0, 'Stock can not be negative']
     },
-})
+}, { timestamps: true })
 
 bookSchema.set('toJSON', { virtuals: true });
 bookSchema.set('toObject', { virtuals: true });

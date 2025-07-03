@@ -20,7 +20,7 @@ const createBook = async (req, res) => {
 
         res.status(201).json(book);
     } catch (err) {
-        console.error(err); // helpful for debugging
+
         res.status(500).json({ message: 'Server Error: ' + err.message });
     }
 };
@@ -45,9 +45,6 @@ const findBookById = async (req, res) => {
         const hashid = req.params.hashid;
         const realId = hashids.decodeId(hashid); 
 
-        console.log("Hashid:", hashid);
-        console.log("Decoded ObjectId:", realId);
-
         if (!realId) {
             return res.status(404).json({ message: 'Invalid link' });
         }
@@ -59,7 +56,6 @@ const findBookById = async (req, res) => {
 
         res.status(200).json(book);
     } catch (err) {
-        console.error("Error in findBookById:", err);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
@@ -81,11 +77,10 @@ const findBookByISBN = async (req, res) => {
 
 // UPDATE a book
 const updateBook = async (req, res) => {
-    console.log("Updating book with hashid:", req.params.hashid);
+
     try {
         const decodedId = hashids.decodeId(req.params.hashid);
-        console.log("Decoded ID:", decodedId);
-     //   console.log("Request body:", req.body);
+
         if (!decodedId) {
             return res.status(400).json({ message: 'Invalid ID' });
         }

@@ -1,50 +1,40 @@
-import React, { useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Box,
-  MenuItem,
-  FormControl,
-  Select,
-  InputLabel,
-  Stack,
+  Paper,  Table,  TableBody,  TableCell,  TableContainer,  TableHead,  TableRow,
+  Typography,  Box,  MenuItem,  FormControl,  Select,  InputLabel,  Stack,
+  Button,
 } from '@mui/material';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllReviews } from '../state/review/Action';
 
 const columns = [
-  { id: 'reviewId', label: 'Review ID', minWidth: 80 },
-  { id: 'bookTitle', label: 'Book Title', minWidth: 150 },
-  { id: 'user', label: 'User', minWidth: 120 },
+  { id: '_id', label: 'Review ID', minWidth: 80 },
+  { id: `book.title`, label: 'Book Title', minWidth: 150 },
+  { id: `user.name`, label: 'User', minWidth: 120 },
   { id: 'rating', label: 'Rating', minWidth: 100 },
   { id: 'comment', label: 'Comment', minWidth: 200 },
-];
-
-const rows = [
-  { reviewId: 'R001', bookTitle: 'Book A', user: 'Alice', rating: 5, comment: 'Excellent book!' },
-  { reviewId: 'R002', bookTitle: 'Book B', user: 'Bob', rating: 3, comment: 'It was okay.' },
-  { reviewId: 'R003', bookTitle: 'Book C', user: 'Charlie', rating: 4, comment: 'Nice read.' },
-  { reviewId: 'R004', bookTitle: 'Book A', user: 'Diana', rating: 2, comment: 'Not my type.' },
-  { reviewId: 'R005', bookTitle: 'Book D', user: 'Ethan', rating: 5, comment: 'Loved every page!' },
 ];
 
 const ReviewsPage = () => {
   const [bookFilter, setBookFilter] = useState('');
   const [ratingFilter, setRatingFilter] = useState('');
+  const dispatch = useDispatch();
 
-  const filteredRows = rows.filter((row) => {
+  const reviews = useSelector((store) => store.reviews.reviews) || [];
+
+  useEffect(()=>{
+    dispatch(getAllReviews());
+  },[dispatch])
+
+  const filteredReviews = reviews.filter((row) => {
     const matchesBook = bookFilter ? row.bookTitle === bookFilter : true;
     const matchesRating = ratingFilter ? row.rating === parseInt(ratingFilter) : true;
     return matchesBook && matchesRating;
   });
 
-  const uniqueBooks = [...new Set(rows.map((r) => r.bookTitle))];
+  const uniqueBooks = [...new Set(reviews.map((r) => r.bookTitle))];
 
   return (
     <Box p={3}>
@@ -90,6 +80,9 @@ const ReviewsPage = () => {
             ))}
           </Select>
         </FormControl>
+
+        <Button onClick={() => { setBookFilter(''); setRatingFilter(''); }}>Clear Filters</Button>
+
       </Stack>
 
       <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
@@ -114,9 +107,9 @@ const ReviewsPage = () => {
             </TableHead>
 
             <TableBody>
-              {filteredRows.map((row, index) => (
+              {filteredReviews.map((row, index) => (
                 <TableRow
-                  key={row.reviewId}
+                  key={row._id}
                   hover
                   sx={{
                     backgroundColor: index % 2 === 0 ? '#FAFAFA' : 'white',
@@ -139,7 +132,7 @@ const ReviewsPage = () => {
                   ))}
                 </TableRow>
               ))}
-              {filteredRows.length === 0 && (
+              {filteredReviews.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={columns.length} align="center">
                     No reviews found.

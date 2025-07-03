@@ -19,11 +19,38 @@ const columns = [
 
 ];
 
+const categories = [
+  { value: '', label: '' },
+  { value: 'fiction', label: 'Fiction' },
+  { value: 'non-fiction', label: 'Non-Fiction' },
+  { value: 'romance', label: 'Romance' },
+  { value: 'thriller', label: 'Thriller' },
+  { value: 'mystery', label: 'Mystery' },
+  { value: 'fantasy', label: 'Fantasy' },
+  { value: 'science', label: 'Science' },
+  { value: 'history', label: 'History' },
+  { value: 'biography', label: 'Biography' },
+  { value: 'self-help', label: 'Self-Help' },
+  { value: 'education', label: 'Education' },
+  { value: 'children', label: 'Children' },
+  { value: 'young-adult', label: 'Young Adult' },
+  { value: 'spirituality', label: 'Spirituality' },
+  { value: 'philosophy', label: 'Philosophy' },
+  { value: 'memoir', label: 'Memoir' },
+  { value: 'classic', label: 'Classic' },
+  { value: 'poetry', label: 'Poetry' },
+  { value: 'sinhala-literature', label: 'Sinhala Literature' },
+  { value: 'tamil-literature', label: 'Tamil Literature' },
+  { value: 'sri-lankan-history', label: 'Sri Lankan History' },
+];
+
 const BooksPage = () => {
   const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const dispatch = useDispatch();
   const [editBook, setEditBook] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState('');
+
 
 
   const books = useSelector((state) => state.books.books || []);
@@ -64,12 +91,16 @@ const BooksPage = () => {
   };
 
 
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchText.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchText.toLowerCase()) ||
-    book.description?.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredBooks = books.filter((book) => {
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchText.toLowerCase()) ||
+      book.isbn.includes(searchText);
 
+    const matchesCategory = categoryFilter === '' || book.category === categoryFilter;
+
+    return matchesSearch && matchesCategory;
+  });
   return (
     <Box sx={{ padding: 2 }}>
       <Box
@@ -88,15 +119,38 @@ const BooksPage = () => {
         </Button>
       </Box>
 
-      <TextField
-        label="Search by Title, Author or Description"
-        variant="outlined"
-        size="small"
-        fullWidth
-        sx={{ mb: 2 }}
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        <TextField
+          label="Search by Title, Author or ISBN"
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{ mb: 2, mr: 2 }}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+
+
+        <TextField
+          select
+          label="Filter by Category"
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          SelectProps={{ native: true }}
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{ mb: 2, mr: 2 }}
+        >
+          {categories.map((category) => (
+            <option key={category.value} value={category.value}>
+              {category.label}
+            </option>
+          ))}
+        </TextField>
+
+        
+      </Box>
 
       <Modal open={open} onClose={handleClose} sx={{ overflow: "scroll" }}>
         <Box

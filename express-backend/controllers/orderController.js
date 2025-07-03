@@ -43,7 +43,7 @@ export async function createOrder(req, res) {
 // get all orders
 export async function findAllOrders(req,res) {
   try{
-    const orders = await find();
+    const orders = await Order.find();
     res.status(200).json(orders);
   }catch{
     res.status(500).json({ message: err.message });

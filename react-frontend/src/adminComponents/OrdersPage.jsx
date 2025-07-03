@@ -10,16 +10,16 @@ const columns = [
   { id: 'orderId', label: 'Order ID', minWidth: 100 },
   { id: 'user', label: 'User', minWidth: 150 },
   { id: 'date', label: 'Date', minWidth: 120 },
-  { id: 'total', label: 'Total ($)', minWidth: 100 },
-  { id: 'status', label: 'Status', minWidth: 150 },
+  { id: 'totalPrice', label: 'Total ($)', minWidth: 100 },
+  { id: 'orderStatus', label: 'Status', minWidth: 150 },
 ];
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'Delivered': return 'success';
-    case 'Pending': return 'warning';
-    case 'Cancelled': return 'error';
-    case 'Shipped': return 'info';
+    case 'delivered': return 'success';
+    case 'processing': return 'warning';
+    case 'cancelled': return 'error';
+    case 'shipped': return 'info';
     default: return 'default';
   }
 };
@@ -100,11 +100,11 @@ const OrdersPage = () => {
                 >
                   <TableCell>{row.orderId}</TableCell>
                   <TableCell>{row.user}</TableCell>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.total}</TableCell>
+                  <TableCell>{row.orderdAt}</TableCell>
+                  <TableCell>{row.totalPrice}</TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Chip label={row.status} color={getStatusColor(row.status)} size="small" />
+                      <Chip label={row.orderStatus} color={getStatusColor(row.orderStatus)} size="small" />
                       <Button
                         variant="outlined"
                         size="small"

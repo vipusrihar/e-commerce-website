@@ -16,10 +16,9 @@ export const getAllUsers = () => async (dispatch) => {
         console.error("Fetch users error:", message);
         return;
     }
-    console.log("Token:", token);
+    console.log("Token is present");
 
     try {
-
         const response = await axios.get(`${API_URL}/users`, {
             headers: {
                 Authorization: `Bearer ${token}`,

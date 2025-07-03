@@ -18,13 +18,18 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
 
     dispatch(loginSuccess(response.data));
 
+    localStorage.setItem("token", response.data.token);  // to solve the logout on refresh
+    // redux state lives in memory so when the page is refreshed, it is cleared.
+    //That’s why whenever we press refresh  we are logged out,our Redux state resets.
+
+    localStorage.setItem("auth", JSON.stringify(response.data));
+
     const role = response?.data?.selectedUser?.role || response?.data?.user?.role;
     if (role === "ADMIN") {
       navigate("/adminDashboard");
     } else {
       navigate("/dashboard");
     }
-    localStorage.setItem("token", response.data.token);
     alert("Login successful!");
   } catch (error) {
     const message = error.response?.data?.message || "Login failed. Please try again.";
@@ -32,6 +37,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
     alert(message);
   }
 };
+
 
 export const registerUser = (userData, navigate) => async (dispatch) => {
   dispatch(registerStart());
@@ -51,6 +57,7 @@ export const registerUser = (userData, navigate) => async (dispatch) => {
 };
 
 export const logoutUser = (navigate) => async (dispatch) => {
+  localStorage.removeItem("auth");
   localStorage.removeItem("token");
   dispatch(logout());
   dispatch(clearBookState());
