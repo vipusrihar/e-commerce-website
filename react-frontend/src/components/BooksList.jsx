@@ -1,8 +1,8 @@
 import React, { useEffect, useState, } from 'react';
 import {
-  Box,  Chip,  Grid,  Paper,  Typography,
-  IconButton,  Tooltip,} from '@mui/material';
-import { styled } from '@mui/material/styles';
+  Box, Chip, Grid, Paper, Typography,
+  IconButton, Tooltip,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllBooks, getBookById } from '../state/book/Action';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -10,6 +10,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import AddToCartModal from './AddToCartModal';
 import { addCartItem } from '../state/cart/Action';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+import { styled, alpha } from '@mui/material/styles';
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -44,6 +48,51 @@ const Overlay = styled(Box)({
   transition: 'opacity 0.3s ease-in-out',
   zIndex: 2,
 });
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('md')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+ border: '2px solid black',
+backgroundColor: 'white'
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  width: '100%',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    [theme.breakpoints.up('md')]: {
+      width: '50ch',
+      '&:focus': {
+        width: '60ch',
+      },
+    },
+  },
+}));
+
 
 const BooksList = () => {
   const dispatch = useDispatch();
@@ -84,7 +133,17 @@ const BooksList = () => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1, padding: 4, marginTop:5 }}>
+      <Box>
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginTop: 5}}>
+          <Search>
+            <SearchIconWrapper >
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+          </Search>
+        </Box>
+      </Box>
+      <Box sx={{ flexGrow: 1, padding: 4,  }}>
         <Grid container spacing={4}>
           {books.map((book) => (
             <Grid size={3} key={book._id}>
@@ -150,7 +209,7 @@ const BooksList = () => {
             setQuantity={setQuantity}
             onConfirm={handleConfirmAddToCart}
           />
-        ) 
+        )
       }
 
     </>

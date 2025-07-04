@@ -28,7 +28,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
     if (role === "ADMIN") {
       navigate("/adminDashboard");
     } else {
-      navigate("/dashboard");
+      navigate("/home");
     }
     alert("Login successful!");
   } catch (error) {

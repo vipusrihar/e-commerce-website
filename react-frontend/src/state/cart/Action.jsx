@@ -25,9 +25,8 @@ export const addCartItem = (productId, quantity, userId) => async (dispatch) => 
             const errorData = await response.json(); // parse error response if any
             throw new Error(errorData.message || 'Failed to add item to cart');
         }
-
         const data = await response.json();
-        dispatch(addCartItemSuccess(data.cartItems));
+        dispatch(getCartByUserId(userId));
         console.log("Item added to cart successfully:", data);
     } catch (error) {
         console.error("Add to cart error:", error.message);

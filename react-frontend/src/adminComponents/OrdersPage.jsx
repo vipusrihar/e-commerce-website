@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllOrders } from '../state/order/Action';
 
 const columns = [
-  { id: 'orderId', label: 'Order ID', minWidth: 100 },
+  { id: '_id', label: 'Order ID', minWidth: 100 },
   { id: 'user', label: 'User', minWidth: 150 },
   { id: 'date', label: 'Date', minWidth: 120 },
   { id: 'totalPrice', label: 'Total ($)', minWidth: 100 },
@@ -62,6 +62,7 @@ const OrdersPage = () => {
 
   const statusOptions = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
+
   return (
     <Box sx={{ padding: 3 }}>
       <Typography align="center" gutterBottom variant="h4" sx={{ color: '#78350F', fontWeight: 'bold' }}>
@@ -98,9 +99,14 @@ const OrdersPage = () => {
                     backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB',
                   }}
                 >
-                  <TableCell>{row.orderId}</TableCell>
+                  <TableCell>{row._id}</TableCell>
                   <TableCell>{row.user}</TableCell>
-                  <TableCell>{row.orderdAt}</TableCell>
+                  
+                  <TableCell>
+                  {row.orderdAt.split('T')[0]}
+                  <br/>
+                  {row.orderdAt.split('T')[1].split(':').slice(0, 2).join(':')}
+                  </TableCell>
                   <TableCell>{row.totalPrice}</TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

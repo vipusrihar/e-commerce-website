@@ -27,6 +27,7 @@ const cartSlice = createSlice({
         },
         getCartItemsStart : (state) =>{
             state.isLoading = true;
+            state.success = null;
         },
         getCartItemsSuccess : (state, action) => {
             state.isLoading = false;

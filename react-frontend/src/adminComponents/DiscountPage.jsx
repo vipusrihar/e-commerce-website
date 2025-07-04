@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Stack,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box
+  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Button, Stack, Dialog, DialogTitle, DialogContent, DialogActions, TextField,
+  Typography, Box,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Checkbox,
+  ListItemText
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { useDispatch, useSelector } from 'react-redux';
+import { createDiscount, editDiscount, getAllDiscounts } from '../state/discount/Action'
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
@@ -13,21 +23,45 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 200 },
 ];
 
-const initialRows = [
-  { id: 1, code: 'NEWYEAR10', amount: 10, validFrom: '2025-01-01', validTo: '2025-01-10' },
-  { id: 2, code: 'SUMMER20', amount: 20, validFrom: '2025-06-01', validTo: '2025-06-30' },
-  { id: 3, code: 'WELCOME15', amount: 15, validFrom: '2025-04-01', validTo: '2025-04-15' },
-];
+
+
 
 const DiscountsPage = () => {
-  const [rows, setRows] = useState(initialRows);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [dialogType, setDialogType] = useState(''); // 'add' or 'edit'
-  const [selectedDiscount, setSelectedDiscount] = useState(null);
+  const dispatch = useDispatch();
+  const availableBooks = useSelector((store) => store.books.books)
 
-  const handleOpenDialog = (type, discount) => {
+  const discounts = useSelector((store) => store.discounts.discounts);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogType, setDialogType] = useState('add'); // 'add' or 'edit'
+  const [selectedDiscount, setSelectedDiscount] = useState({
+    code: '',
+    amount: '',
+    validFrom: '',
+    validTo: ''
+  });
+
+    const handleAdd = () => {
+    handleOpenDialog('add', {
+      code: '',
+      amount: '',
+      validFrom: '',
+      validTo: '',
+      appliesToAll: false,
+      books: [],
+      active: true,
+    });
+  };
+
+  const handleOpenDialog = (type, discount = null) => {
     setDialogType(type);
-    setSelectedDiscount(discount);
+    setSelectedDiscount(
+      discount || {
+        code: '',
+        amount: '',
+        validFrom: '',
+        validTo: ''
+      }
+    );
     setOpenDialog(true);
   };
 
@@ -40,27 +74,57 @@ const DiscountsPage = () => {
     setSelectedDiscount(prev => ({ ...prev, [field]: value }));
   };
 
+
   const handleSave = () => {
-    setRows(prev =>
-      prev.map(row => row.id === selectedDiscount.id ? selectedDiscount : row)
-    );
+    if(dialogType === 'add'){
+      dispatch(createDiscount(selectedDiscount))
+    }else {
+      dispatch(editDiscount())
+    }
+    // if (dialogType === 'add') {
+    //   const newDiscount = {
+    //     ...selectedDiscount,
+    //     id: rows.length + 1,
+    //   };
+    //   setRows(prev => [...prev, newDiscount]);
+    // } else {
+    //   setRows(prev =>
+    //     prev.map(row => row.id === selectedDiscount.id ? selectedDiscount : row)
+    //   );
+    // }
     handleCloseDialog();
   };
 
+
+
+  useEffect(()=>{
+    dispatch(getAllDiscounts())
+  },[dispatch])
+
+
   return (
     <Box p={2}>
-      <Typography
-        variant="h5"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: 'bold', color: '#78350F' }}>
-        Manage Discount Offers
-      </Typography>
+      {/* Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#78350F' }}>
+          Manage Discount Offers
+        </Typography>
+        <Button onClick={() => handleAdd()}>
+          <AddIcon sx={{ width: 40, height: 40, color: '#78350F' }} />
+        </Button>
+      </Box>
 
       {/* Table */}
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 550 }}>
-          <Table stickyHeader aria-label="discounts table">
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -70,7 +134,7 @@ const DiscountsPage = () => {
                       minWidth: column.minWidth,
                       backgroundColor: '#FCD34D',
                       color: '#78350F',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
                     }}
                   >
                     {column.label}
@@ -78,57 +142,31 @@ const DiscountsPage = () => {
                 ))}
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {rows.map((row) => (
-                <TableRow hover tabIndex={-1} key={row.id}>
-                  {columns.map((column) => {
-                    if (column.id === 'actions') {
-                      return (
-                        <TableCell key="actions">
-                          <Stack direction="row" spacing={1}>
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              onClick={() => handleOpenDialog('add', row)}
-                              sx={{
-                                color: '#78350F',
-                                borderColor: '#78350F',
-                                '&:hover': {
-                                  backgroundColor: '#fef3c7', // light background on hover
-                                  borderColor: '#78350F',
-                                },
-                              }}
-                            >
-                              Add Time Period
-                            </Button>
-
-                            <Button
-                              size="small"
-                              variant="contained"
-                              onClick={() => handleOpenDialog('edit', row)}
-                              sx={{
-                                backgroundColor: '#78350F',
-                                color: '#fff',
-                                '&:hover': {
-                                  backgroundColor: '#652d0d',
-                                },
-                              }}
-                            >
-                              Edit
-                            </Button>
-                          </Stack>
-
-                        </TableCell>
-                      );
-                    } else {
-                      return (
-                        <TableCell key={column.id}>
-                          {row[column.id]}
-                        </TableCell>
-                      );
-                    }
-                  })}
+              {discounts.map((row) => (
+                <TableRow hover key={row.id}>
+                  {columns.map((column) =>
+                    column.id === 'actions' ? (
+                      <TableCell key="actions">
+                        <Stack direction="row" spacing={1}>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            onClick={() => handleOpenDialog('edit', row)}
+                            sx={{
+                              backgroundColor: '#78350F',
+                              color: '#fff',
+                              '&:hover': { backgroundColor: '#652d0d' },
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        </Stack>
+                      </TableCell>
+                    ) : (
+                      <TableCell key={column.id}>{row[column.id]}</TableCell>
+                    )
+                  )}
                 </TableRow>
               ))}
             </TableBody>
@@ -136,24 +174,25 @@ const DiscountsPage = () => {
         </TableContainer>
       </Paper>
 
-      {/* Dialog */}
+      {/* Add/Edit Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle sx={{ color: '#1976d2', fontWeight: 'bold' }}>
-          {dialogType === 'edit' ? 'Edit Discount' : 'Add Time Period'}
+          {dialogType === 'edit' ? 'Edit Discount' : 'Add Discount'}
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
             <TextField
               label="Code"
               value={selectedDiscount?.code || ''}
-              onChange={(e) => handleChange('code', e.target.value)}
+              onChange={(e) => handleChange('code', e.target.value.toUpperCase())}
               fullWidth
             />
             <TextField
               label="Amount (%)"
               type="number"
+              inputProps={{ min: 1, max: 100 }}
               value={selectedDiscount?.amount || ''}
-              onChange={(e) => handleChange('amount', e.target.value)}
+              onChange={(e) => handleChange('amount', Number(e.target.value))}
               fullWidth
             />
             <TextField
@@ -172,6 +211,46 @@ const DiscountsPage = () => {
               fullWidth
               InputLabelProps={{ shrink: true }}
             />
+            <FormControl fullWidth disabled={selectedDiscount?.appliesToAll}>
+              <InputLabel>Select Books</InputLabel>
+              <Select
+                multiple
+                value={selectedDiscount?.books || []}
+                onChange={(e) => handleChange('books', e.target.value)}
+                renderValue={(selected) =>
+                  selected.map(id => availableBooks.find(book => book._id === id)?.title).join(', ')
+                }
+              >
+                {availableBooks.map((book) => (
+                  <MenuItem key={book._id} value={book._id}>
+                    <Checkbox checked={selectedDiscount?.books?.includes(book._id)} />
+                    <ListItemText primary={book.title} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Box>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={selectedDiscount?.appliesToAll || false}
+                  onChange={(e) => handleChange('appliesToAll', e.target.checked)}
+                />
+                {' '}Applies to all books
+              </label>
+            </Box>
+            <Box>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={selectedDiscount?.active ?? true}
+                  onChange={(e) => handleChange('active', e.target.checked)}
+                />
+                {' '}Active
+              </label>
+            </Box>
+
           </Stack>
         </DialogContent>
         <DialogActions>
@@ -179,6 +258,7 @@ const DiscountsPage = () => {
           <Button onClick={handleSave} variant="contained">Save</Button>
         </DialogActions>
       </Dialog>
+
     </Box>
   );
 };

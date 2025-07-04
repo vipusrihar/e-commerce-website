@@ -19,7 +19,7 @@ const ordersDataByYear = {
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const DashboardPage = () => {
+const AdminDashboardPage = () => {
   const [selectedYear, setSelectedYear] = useState(2024);
 
   const handleYearChange = (event) => {
@@ -81,4 +81,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default AdminDashboardPage;
