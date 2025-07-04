@@ -15,7 +15,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
-
+import discountRoutes from './routes/discountRouter.js';
 
 connectDB();
 
@@ -37,6 +37,7 @@ app.use('/api/users/:userId/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/discounts',discountRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
