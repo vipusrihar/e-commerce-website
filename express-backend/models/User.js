@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         country: String,
         zipCode: String
     },
+    phoneNo : {
+        type : Number,
+        minlength : 12,
+    },
     createdAt: {
         type: Date,
         default: Date.now

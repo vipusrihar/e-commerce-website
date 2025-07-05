@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  createDiscount, editDiscount, getAllDiscounts, updateDiscountStatusById
+  createDiscount, deleteDiscountById, editDiscount, getAllDiscounts, updateDiscountStatusById
 } from '../state/discount/Action';
 import { getAllBooks } from '../state/book/Action';
 import AddDiscountForm from './AddDiscountForm';
@@ -90,7 +90,7 @@ const DiscountsPage = () => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this discount?')) {
-      //  dispatch(deleteDiscount(id));
+      dispatch(deleteDiscountById(id))
     }
   };
 

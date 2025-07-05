@@ -70,9 +70,10 @@ export async function findOrderById(req, res) {
 // Get all Orders for a user
 export async function findOrdersByUser(req, res) {
   try {
-    const orders = await find({ user: req.params.userId })
+    const orders = await Order.find({ user: req.params.userId })
       .populate('items')
       .populate('user', 'name email');
+    console.log(orders)
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });

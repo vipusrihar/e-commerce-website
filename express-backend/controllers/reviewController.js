@@ -67,21 +67,22 @@ export async function updateReview(req, res) {
 
 export async function getReviewsByUser(req, res) {
     try {
-        const { userId } = req.params;
+        const userId = req.params.userId;
 
         if (!userId) {
             return res.status(400).json({ message: "User ID is required" });
         }
 
-        const reviews = await find({ user: userId })
-            .populate('user', 'name')   
-            .populate('book', 'title'); 
+        const reviews = await Review.find({ user: userId })
+            .populate('user', 'name')    // Populates the 'user' field with only 'name'
+            .populate('book', 'title');  // Populates the 'book' field with only 'title'
 
         res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 }
+
 
 // Delete a review (only if it's the user’s own review)
 export async function deleteReview(req, res) {

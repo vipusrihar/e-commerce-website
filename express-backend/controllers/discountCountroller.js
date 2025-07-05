@@ -1,17 +1,26 @@
 import Discount from '../models/Discount.js'
 
 export async function createDiscount(req, res) {
-    console.log("Request", req.body)
     try {
-        const { code, amount, validFrom, validTo, appliesToAll, books } = req.body.discount;
+        const { code, amount, validFrom, validTo, appliesToAll, books, active } = req.body.discount;
 
         if (!code || !amount || !validFrom || !validTo) {
-            console.log("error here")
             return res.status(400).json({ message: 'Required fields missing' });
         }
 
         if (!appliesToAll && (!books || books.length === 0)) {
             return res.status(400).json({ message: 'Please select at least one book for specific discount' });
+        }
+
+        const now = new Date();
+
+        // Determine active status automatically if not provided
+        let isActive;
+        if (typeof active === 'boolean') {
+            isActive = active;  // Use provided active value if exists
+        } else {
+            // Set active true only if now is between validFrom and validTo
+            isActive = new Date(validFrom) <= now && now <= new Date(validTo);
         }
 
         const discountData = {
@@ -21,6 +30,7 @@ export async function createDiscount(req, res) {
             validTo,
             appliesToAll,
             books: appliesToAll ? [] : books,
+            active: isActive,
         };
 
         const savedDiscount = await Discount.create(discountData);
@@ -31,9 +41,8 @@ export async function createDiscount(req, res) {
     }
 }
 
-
 export async function editDiscount(req, res) {
-    console.log("Request", req)
+
     try {
         const { id } = req.params;
         const { code, amount, validFrom, validTo, appliesToAll, books } = req.body;
@@ -76,13 +85,28 @@ export async function getAllDiscounts(req, res) {
     try {
         const now = new Date();
 
-        //update expired discounts
-        await Discount.updateMany(
-            { validTo: { $lt: now }, active: true },
-            { $set: { active: false } }
-        );
+        await Discount.bulkWrite([
+            {
+                updateMany: {
+                    filter: { validTo: { $lt: now }, active: true },
+                    update: { $set: { active: false } },
+                },
+            },
+            {
+                updateMany: {
+                    filter: { validFrom: { $lte: now }, validTo: { $gte: now }, active: false },
+                    update: { $set: { active: true } },
+                },
+            },
+            {
+                updateMany: {
+                    filter: { validFrom: { $gt: now }, active: true },
+                    update: { $set: { active: false } },
+                },
+            }
+        ]);
 
-        //get updated discounts
+        // Fetch updated discounts
         const discounts = await Discount.find()
             .sort({ createdAt: -1 })
             .populate('books')
@@ -147,33 +171,76 @@ export async function updateDiscountStatusById(req, res) {
         const { id } = req.params;
         const { active } = req.body;
 
-        console.log('Full request body:', req.body);
-        console.log('Active:', active);
-
         if (typeof active !== 'boolean') {
             return res.status(400).json({ message: 'Active status must be a boolean' });
         }
 
-        const discount = await Discount.findByIdAndUpdate(
-            id,
-            {
-                active,
-                validFrom: { $lte: now },
-                validTo: { $gte: now },
-            },
-            { new: true }
-        ).populate('books').exec();;
+        const now = new Date();
+
+        //check if the discount exists and is within the valid time range
+        const discount = await Discount.findOne({
+            _id: id,
+            validFrom: { $lte: now },
+            validTo: { $gte: now },
+        });
 
         if (!discount) {
-            return res.status(404).json({ message: 'Discount not found' });
+            return res.status(404).json({ message: 'Discount not found or not currently valid' });
         }
 
-        res.status(200).json({ message: 'Discount status updated', discount });
+        discount.active = active;
+        await discount.save();
+
+        const populatedDiscount = await discount.populate('books');
+
+        res.status(200).json({ message: 'Discount status updated', discount: populatedDiscount });
     } catch (error) {
         console.error('Error updating discount status:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 }
+
+
+export async function deleteDiscount(req, res) {
+
+    try {
+
+        const id = req.params.id;
+        console.log(id)
+
+        if (!id) {
+            return res.status(400).json({ message: 'Discount ID is required' });
+        }
+
+        const now = new Date();
+
+        const discount = await Discount.findById(id);
+
+        if (!discount) {
+            return res.status(404).json({ message: 'Discount not found' });
+        }
+
+        // Check if discount is still valid (not expired)
+        if (discount.validTo >= now) {
+            return res.status(400).json({
+                error: 'Cannot delete: Discount is still valid (not expired yet)',
+            });
+        }
+
+        // Now it's expired, proceed to delete
+        const deletedDiscount = await Discount.findByIdAndDelete(id);
+
+        res.status(200).json({
+            message: 'Discount deleted successfully',
+            deletedDiscount,
+        });
+    } catch (error) {
+        console.error('Error deleting discount:', error.message);
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+
 
 
 export default {
@@ -182,5 +249,6 @@ export default {
     updateDiscountStatusById,
     editDiscount,
     getAllDiscounts,
-    findDiscountByBookId
+    findDiscountByBookId,
+    deleteDiscount
 }

@@ -1,7 +1,7 @@
 import express from 'express'; 
 import cartController from '../controllers/cartController.js';
 import auth from '../middleware/auth.js';
-import { Router } from 'express';
+
 
 const router = express.Router({ mergeParams: true });
 
