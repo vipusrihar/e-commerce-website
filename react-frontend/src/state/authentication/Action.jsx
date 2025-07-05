@@ -30,6 +30,8 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
     } else {
       navigate("/home");
     }
+
+    console.log(response.data);
     alert("Login successful!");
   } catch (error) {
     const message = error.response?.data?.message || "Login failed. Please try again.";

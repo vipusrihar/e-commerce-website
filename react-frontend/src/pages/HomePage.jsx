@@ -1,16 +1,25 @@
 import React from 'react'
 import NavBar from '../components/NavBar'
 import BooksList from '../components/BooksList'
-import { TextField } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 
 
 
 const HomePage = () => {
   return (
-    <div className='p-0'>
-    <BooksList/>
+    <Box
+      sx={{
+        backgroundImage: 'url("https://images2.alphacoders.com/261/26102.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        marginTop:0
+      }}
+    >
+      <BooksList />
 
-    </div>
+    </Box>
   )
 }
 

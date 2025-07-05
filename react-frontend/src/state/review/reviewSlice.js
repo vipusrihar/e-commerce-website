@@ -74,10 +74,24 @@ const reviewSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
+        getReviewsByUserIDStart: (state) => {
+            state.isLoading = true;
+            state.error = null;
+        },
+        getReviewsByUserIDSuccess: (state, action) => {
+            state.isLoading = false;
+            state.reviews = action.payload.reviews;
+            state.success = true;
+        },
+        getReviewsByUserIDFailure: (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            state.success = false;
+        },
         clearReviewState: (state) => {
             state.selectedReview = null;
             state.isLoading = false;
-            state.error =null;
+            state.error = null;
             state.reviews = [];
             state.success = null;
         },
@@ -89,7 +103,8 @@ export const {
     selectReview, clearReviewState,
     addReviewStart, addReviewSuccess, addReviewFailure,
     updateReviewStart, updateReviewSuccess, updateReviewFailure,
-    deleteReviewStart, deleteReviewSuccess, deleteReviewFailure 
+    deleteReviewStart, deleteReviewSuccess, deleteReviewFailure,
+    getReviewsByUserIDStart,getReviewsByUserIDSuccess, getReviewsByUserIDFailure
 } = reviewSlice.actions;
 
 export default reviewSlice.reducer;

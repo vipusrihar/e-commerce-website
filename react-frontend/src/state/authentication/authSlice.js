@@ -43,7 +43,7 @@ const authSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
-        logout: (state) => {
+         logout: (state) => {
             state.selectedUser = null;
             state.jwt = null;
             // state.users = [];

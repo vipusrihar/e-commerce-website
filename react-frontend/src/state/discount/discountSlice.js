@@ -92,15 +92,35 @@ const discountSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload || "Failed to fetch by book ID.";
     },
+
+
+
+  // Delete Discount by ID
+  deleteDiscountStart: (state) => {
+    state.isLoading = true;
+    state.error = null;
+    state.success = false; // Optional: reset success flag on start
   },
+  deleteDiscountSuccess: (state) => {
+    state.isLoading = false;
+    state.success = true;
+  },
+  deleteDiscountFailure: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload; // Set error from action
+    state.success = false;
+  }
+},
+
 });
 
 export const {
-  createDiscountStart,  createDiscountSuccess,  createDiscountFailure,
-  editDiscountStart,  editDiscountSuccess,  editDiscountFailure,
-  getAllDiscountsStart,  getAllDiscountsSuccess,  getAllDiscountsFailure,
-  updateDiscountStatusStart,  updateDiscountStatusSuccess,  updateDiscountStatusFailure,
-  getDiscountByBookIdStart,  getDiscountByBookIdSuccess,  getDiscountByBookIdFailure,
+  createDiscountStart, createDiscountSuccess, createDiscountFailure,
+  editDiscountStart, editDiscountSuccess, editDiscountFailure,
+  getAllDiscountsStart, getAllDiscountsSuccess, getAllDiscountsFailure,
+  updateDiscountStatusStart, updateDiscountStatusSuccess, updateDiscountStatusFailure,
+  getDiscountByBookIdStart, getDiscountByBookIdSuccess, getDiscountByBookIdFailure,
+  deleteDiscountStart, deleteDiscountSuccess, deleteDiscountFailure
 } = discountSlice.actions;
 
 export default discountSlice.reducer;

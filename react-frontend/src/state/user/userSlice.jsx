@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialValues = {
     users : [],
+    selectedUser: '',
     isLoading : false,
     error : null,
     success : null
@@ -25,12 +26,29 @@ const userSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
+        getUserByIdStart: (state) => {
+            state.isLoading = true;
+            state.error = null;
+        },
+        getUserByIdSuccess: (state, action) => {
+            state.isLoading = false;
+            console.log(action.payload);
+            state.selectedUser = action.payload
+            state.success = true;
+        },
+        getUserByIdFailure: (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            state.success = false;
+        },
+       
         updateUserStart: (state) => {
             state.isLoading = true;
             state.error = null;
         },
         updateUserSuccess : (state, action) => {
             state.isLoading = false,
+            state.selectedUser = action.payload
             state.users = state.users.map(user => 
                 user._id === action.payload.user._id ? action.payload.user : user
             );
@@ -66,6 +84,7 @@ const userSlice = createSlice({
 
 export const {
     getAllUsersStart, getAllUsersSuccess, getAllUsersFailure,
+    getUserByIdStart, getUserByIdSuccess, getUserByIdFailure,
     updateUserStart, updateUserSuccess, updateUserFailure,
     deleteUserStart, deleteUserSuccess, deleteUserFailure,
     clearUserState

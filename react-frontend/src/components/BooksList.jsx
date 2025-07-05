@@ -51,10 +51,11 @@ const Overlay = styled(Box)({
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
+  marginTop: 10,
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: alpha(theme.palette.common.white, 0.85),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: alpha(theme.palette.common.white, 0.95),
   },
   marginLeft: 0,
   width: '100%',
@@ -62,8 +63,7 @@ const Search = styled('div')(({ theme }) => ({
     marginLeft: theme.spacing(1),
     width: 'auto',
   },
- border: '2px solid black',
-backgroundColor: 'white'
+  border: '2px solid black',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -74,7 +74,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  
+
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -99,10 +99,14 @@ const BooksList = () => {
   const books = useSelector((state) => state.books.books) || [];
   const userId = useSelector((state) => state.auth.selectedUser?.id) || null;
   const navigation = useNavigate();
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    dispatch(getAllBooks());
-  }, [dispatch]);
+    if (books.length === 0) {
+      dispatch(getAllBooks());
+    }
+  }, [dispatch, books]);
+
 
   const handleViewBook = (hashid) => {
     dispatch(getBookById(hashid));
@@ -126,6 +130,13 @@ const BooksList = () => {
     setModalOpen(false);
   };
 
+  const filteredBooks = books.filter((book) => {
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchText.toLowerCase())
+    return matchesSearch;
+  });
+
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -133,19 +144,30 @@ const BooksList = () => {
 
   return (
     <>
-      <Box>
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginTop: 5}}>
+      <Box sx={{ pt: 0, mt: 0 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: { xs: 'none', md: 'flex' },
+            justifyContent: 'center', marginTop: 0
+          }}>
           <Search>
             <SearchIconWrapper >
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+            <StyledInputBase
+              placeholder="Search..........By book Name or By Author Name"
+              inputProps={{ 'aria-label': 'search' }}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+
           </Search>
         </Box>
       </Box>
-      <Box sx={{ flexGrow: 1, padding: 4,  }}>
+      <Box sx={{ flexGrow: 1, padding: 4, }}>
         <Grid container spacing={4}>
-          {books.map((book) => (
+          {filteredBooks.map((book) => (
             <Grid size={3} key={book._id}>
               <Item>
                 <ImageContainer>
@@ -175,14 +197,19 @@ const BooksList = () => {
                   />
 
                   <Overlay className="overlay">
-                    <Tooltip title="View">
-                      <IconButton sx={{ color: '#fff', backgroundColor: '#00000088' }}
+                    <Tooltip title="View Book">
+                      <IconButton
+                        sx={{ color: '#fff', backgroundColor: '#00000088' }}
+                        aria-label="View Book"
                         onClick={() => handleViewBook(book.hashid)}>
                         <VisibilityIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Add to Cart">
-                      <IconButton sx={{ color: '#fff', backgroundColor: '#00000088' }} onClick={() => handleAddToCart(book)}>
+                      <IconButton
+                        sx={{ color: '#fff', backgroundColor: '#00000088' }}
+                        aria-label="Add to Cart"
+                        onClick={() => handleAddToCart(book)}>
                         <ShoppingCartIcon />
                       </IconButton>
                     </Tooltip>
@@ -191,9 +218,17 @@ const BooksList = () => {
 
                 </ImageContainer>
 
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>
+                <Typography variant="h6"
+                  sx={{
+                    fontWeight: 'bold',
+                    mt: 2,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}>
                   {book.title}
                 </Typography>
+
               </Item>
             </Grid>
           ))}

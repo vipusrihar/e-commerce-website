@@ -57,6 +57,20 @@ const orderSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
+        getOrderByUserIDStart: (state) => {
+            state.isLoading = true;
+            state.error = null;
+        },
+        getOrderByUserIDSuccess: (state, action) => {
+            state.isLoading = false;
+            state.orders = action.payload.orders;
+            state.success = true;
+        },
+        getOrderByUserIDFailure: (state) => {
+            state.isLoading = false;
+            state.error = action.payload;
+            state.success = false;
+        },
         changeOrderStatusStart: (state) => {
             state.isLoading = true;
             state.error = null;
@@ -78,15 +92,16 @@ const orderSlice = createSlice({
             state.error = null;
             state.isLoading = false;
             state.orders = [],
-            state.selectedOrder = null;
+                state.selectedOrder = null;
             state.success = null;
         }
-    },  
+    },
 })
 
 export const {
-    getAllOrdersFailure,getAllOrdersStart,getAllOrdersSuccess,
-    getOrderByIdStart,getOrderByIdSuccess,getOrderByIdFailure,
+    getAllOrdersFailure, getAllOrdersStart, getAllOrdersSuccess,
+    getOrderByIdStart, getOrderByIdSuccess, getOrderByIdFailure,
+    getOrderByUserIDStart, getOrderByUserIDSuccess, getOrderByUserIDFailure,
     clearOrderState
 } = orderSlice.actions;
 
