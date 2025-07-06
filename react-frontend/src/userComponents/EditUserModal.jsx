@@ -63,8 +63,7 @@ const EditUser = ({ handleClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(updateUser(selectedUser._id, formData));
-    console.log("WW")
-    handleClose(); // Close modal after dispatch
+    handleClose();
   };
 
   return (
@@ -73,10 +72,9 @@ const EditUser = ({ handleClose }) => {
         padding: 4,
         maxWidth: 600,
         margin: '50px auto',
-        bgcolor: 'background.paper'
       }}
     >
-      <Typography variant="h5" gutterBottom>Edit Profile</Typography>
+      <Typography variant="h4" gutterBottom>Edit Profile</Typography>
 
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField
@@ -106,10 +104,10 @@ const EditUser = ({ handleClose }) => {
           onChange={handleChange}
         />
 
-        <Typography variant="h6" sx={{ mt: 3 }}>Address</Typography>
+        <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>Address</Typography>
 
         <Grid container spacing={2}>
-          <Grid>
+          <Grid size={6}>
             <TextField
               label="Street"
               name="address.street"
@@ -119,7 +117,8 @@ const EditUser = ({ handleClose }) => {
             />
           </Grid>
 
-          <Grid>            <TextField
+          <Grid size={6}>
+            <TextField
               label="City"
               name="address.city"
               fullWidth
@@ -128,7 +127,8 @@ const EditUser = ({ handleClose }) => {
             />
           </Grid>
 
-          <Grid>            <TextField
+          <Grid size={6}>
+            <TextField
               label="State"
               name="address.state"
               fullWidth
@@ -137,7 +137,8 @@ const EditUser = ({ handleClose }) => {
             />
           </Grid>
 
-          <Grid>            <TextField
+          <Grid size={6}>
+            <TextField
               label="Country"
               name="address.country"
               fullWidth
@@ -146,7 +147,8 @@ const EditUser = ({ handleClose }) => {
             />
           </Grid>
 
-          <Grid>            <TextField
+          <Grid size={6}>
+            <TextField
               label="Zip Code"
               name="address.zipCode"
               fullWidth
@@ -156,14 +158,26 @@ const EditUser = ({ handleClose }) => {
           </Grid>
         </Grid>
 
+        <Box sx={{display:'flex' , justifyContent:'space-between', mt: 3 }}>
+        <Button
+        type='button'
+        variant='contained'
+        color='error'
+        onClick={handleClose}
+
+        >
+        Cancel
+
+        </Button>
         <Button
           type="submit"
           variant="contained"
           color="primary"
-          sx={{ mt: 3 }}
+         
         >
-          Save Changes
+          Save
         </Button>
+        </Box>
       </Box>
     </Paper>
   );

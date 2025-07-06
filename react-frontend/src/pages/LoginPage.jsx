@@ -26,7 +26,15 @@ const LoginPage = () => {
 
 
   return (
-    <Modal open={open} >
+    <Modal
+      open={open} sx={{
+        backgroundImage: 'url("https://images2.alphacoders.com/261/26102.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        marginTop: 0
+      }}>
       <div className="absolute top-1/2 left-1/2 w-[400px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-center w-full">Login</h2>

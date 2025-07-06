@@ -3,7 +3,6 @@ import { Box, Typography, Button, Paper, Modal } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserById } from '../state/user/Action';
 import EditIcon from '@mui/icons-material/Edit';
-import EditUserModal from './EditUserModal';
 import EditUser from './EditUserModal';
 
 
@@ -38,16 +37,16 @@ const ProfilePage = () => {
   return (
     <Box>
       <Paper
-        elevation={3}
+        elevation={6}
         sx={{
-          maxWidth: 500,
+          maxWidth: 400,
           margin: '50px auto',
-          padding: 4,
+          padding: 2,
           textAlign: 'center'
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' , background :'yellow'}}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom >
             Profile
           </Typography>
 

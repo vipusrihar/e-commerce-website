@@ -25,7 +25,7 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !email || !password || !address || !repassword) {
+    if (!name || !email || !password || !repassword) {
       alert("Please fill all fields");
       return;
     }
@@ -38,7 +38,6 @@ const SignupPage = () => {
       name,
       email,
       password,
-      address,
       role
     };
     dispatch(registerUser(userData, navigate));
@@ -46,7 +45,14 @@ const SignupPage = () => {
   };
 
   return (
-    <Modal open={open} >
+    <Modal open={open} sx={{
+      backgroundImage: 'url("https://images2.alphacoders.com/261/26102.jpg")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      minHeight: '100vh',
+      marginTop:0
+    }}>
       <div className="absolute top-1/2 left-1/2 w-[400px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-semibold text-center w-full">Sign Up</h1>
@@ -76,15 +82,6 @@ const SignupPage = () => {
             required
             fullWidth
           />
-          <TextField
-            label="Address"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-            fullWidth
-          />
-
           <TextField
             label="Password"
             type="password"

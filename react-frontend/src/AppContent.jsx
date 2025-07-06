@@ -20,7 +20,7 @@ function AppContent() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage /> } />
         <Route path="/home" element={<HomePage />} />
         <Route path="/book/:hashid" element={<BookDetails />} />
         <Route path="/cart" element={<CartPage />} />
@@ -28,7 +28,7 @@ function AppContent() {
         <Route path="/dashboard" element={<DashboardPage />} />
 
         {/* Nested Admin Routes */}
-        <Route path="/adminDashboard/*" element={<AdminPage />}>
+        <Route path="/adminDashboard/*" element={<AdminPage  />}>
         </Route>
       </Routes>
     </>

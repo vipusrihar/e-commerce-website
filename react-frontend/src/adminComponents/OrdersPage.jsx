@@ -4,7 +4,7 @@ import {
   TableHead, TableRow, Chip, Button, Menu, MenuItem
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllOrders } from '../state/order/Action';
+import { changeOrderStatus, getAllOrders } from '../state/order/Action';
 
 const columns = [
   { id: '_id', label: 'Order ID', minWidth: 100 },
@@ -15,7 +15,7 @@ const columns = [
 ];
 
 const getStatusColor = (status) => {
-  switch (status) {
+  switch (status?.toLowerCase()) {
     case 'delivered': return 'success';
     case 'processing': return 'warning';
     case 'cancelled': return 'error';
@@ -53,15 +53,17 @@ const OrdersPage = () => {
   };
 
   const handleChangeStatus = (newStatus) => {
-    const updatedOrders = orders.map(order =>
-      order.orderId === selectedOrderId ? { ...order, status: newStatus } : order
-    );
-    setOrders(updatedOrders);
+    if (selectedOrderId) {
+      dispatch(changeOrderStatus(selectedOrderId, newStatus));
+      const updatedOrders = orders.map(order =>
+        order._id === selectedOrderId ? { ...order, orderStatus: newStatus } : order
+      );
+      setOrders(updatedOrders);
+    }
     handleCloseMenu();
   };
 
-  const statusOptions = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
-
+  const statusOptions = ['processing', 'shipped', 'delivered', 'cancelled'];
 
   return (
     <Box sx={{ padding: 3 }}>
@@ -73,7 +75,7 @@ const OrdersPage = () => {
         <TableContainer sx={{ maxHeight: 550 }}>
           <Table stickyHeader aria-label="orders table">
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#FCD34D' }}>
+              <TableRow>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
@@ -94,27 +96,27 @@ const OrdersPage = () => {
               {orders.map((row, index) => (
                 <TableRow
                   hover
-                  key={row.orderId}
-                  sx={{
-                    backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB',
-                  }}
+                  key={row._id}
+                  sx={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB' }}
                 >
                   <TableCell>{row._id}</TableCell>
                   <TableCell>{row.user}</TableCell>
-                  
+
                   <TableCell>
-                  {row.orderdAt.split('T')[0]}
-                  <br/>
-                  {row.orderdAt.split('T')[1].split(':').slice(0, 2).join(':')}
+                    {row.orderdAt?.split('T')[0]}
+                    <br />
+                    {row.orderdAt?.split('T')[1]?.split(':').slice(0, 2).join(':')}
                   </TableCell>
+
                   <TableCell>{row.totalPrice}</TableCell>
+
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Chip label={row.orderStatus} color={getStatusColor(row.orderStatus)} size="small" />
                       <Button
                         variant="outlined"
                         size="small"
-                        onClick={(e) => handleOpenMenu(e, row.orderId)}
+                        onClick={(e) => handleOpenMenu(e, row._id)}
                       >
                         Change
                       </Button>
@@ -127,11 +129,7 @@ const OrdersPage = () => {
         </TableContainer>
       </Paper>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         {statusOptions.map((status) => (
           <MenuItem key={status} onClick={() => handleChangeStatus(status)}>
             {status}
