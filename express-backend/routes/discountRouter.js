@@ -10,6 +10,7 @@ router.get('/byBook/:bookId',auth,discountCountroller.findDiscountByBookId);
 router.put('/editDiscount/:id', auth, discountCountroller.editDiscount);
 router.put('/updateStatus/:id',auth,discountCountroller.updateDiscountStatusById);
 router.delete('/:id', auth, discountCountroller.deleteDiscount);
+router.get('/count',auth,discountCountroller.countActiveDiscount)
 
 
 export default router;

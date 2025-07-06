@@ -6,7 +6,8 @@ import Cart from '../models/Cart.js';
 // Get all users (admin only)
 export async function findAllUsers(req, res) {
     try {
-        const users = await User.find().select('-password');  // Use User model here
+        const users = await User.find({ role: 'USER' }).select('-password');
+        console.log(users)
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -70,10 +71,24 @@ export async function deleteUser(req, res) {
     }
 }
 
+export async function countUsers(req, res) {
+    try {
+        const count = await User.countDocuments({ role: 'USER' });
+        console.log("User",count)
+        res.status(200).json({ count });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to count users' });
+    }
+};
+
+
 export default {
     findAllUsers,
     findUserById,
     findUserByEmail,
     updateUser,
-    deleteUser
+    deleteUser,
+    countUsers,
+
 };

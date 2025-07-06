@@ -9,7 +9,7 @@ export async function createOrder(req, res) {
     let totalPrice = 0;
     const orderItems = await Promise.all(
       items.map(async (item) => {
-        const product = await _findById(item.book); // or Product if you're using a Product model
+        const product = await _findById(item.book); 
         if (!product) {
           throw new Error(`Product not found with ID ${item.book}`);
         }
@@ -67,7 +67,7 @@ export async function findOrderById(req, res) {
   }
 }
 
-// Get all Orders for a user
+// Get all Orders for a useru
 export async function findOrdersByUser(req, res) {
   try {
     const orders = await Order.find({ user: req.params.userId })
@@ -82,6 +82,7 @@ export async function findOrdersByUser(req, res) {
 
 // Update order status by Order ID (e.g. shipped, delivered)
 export async function updateOrderStatus(req, res) {
+  console.log( req.body)
   try {
     const { orderStatus } = req.body;
     const validStatuses = ['processing', 'shipped', 'delivered', 'cancelled'];
@@ -90,7 +91,7 @@ export async function updateOrderStatus(req, res) {
       return res.status(400).json({ message: 'Invalid order status' });
     }
 
-    const order = await findByIdAndUpdate(
+    const order = await Order.findByIdAndUpdate( // <-- use Order here
       req.params.id,
       { orderStatus },
       { new: true }
@@ -117,11 +118,25 @@ export async function deleteOrder(req, res) {
   }
 }
 
+
+export async function countOrders(req, res) {
+    try {
+        const count = await Order.countDocuments();
+        console.log("Order",count)
+        res.status(200).json({ count });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to count orders' });
+    }
+};
+
+
 export default {
   createOrder,
   findAllOrders,
   findOrderById,
   findOrdersByUser,
   updateOrderStatus,
-  deleteOrder
+  deleteOrder,
+  countOrders
 };

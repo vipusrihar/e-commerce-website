@@ -7,6 +7,7 @@ import orderSlice from './order/orderSlice';
 import reviewSlice from './review/reviewSlice';
 import cartSlice from './cart/carttSlice';
 import discountSlice from './discount/discountSlice'
+import countSlice from './count/countSlice';
 
 const rootReducer = combineReducers({
   auth: authSlice,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   reviews: reviewSlice,
   cart: cartSlice,
   discounts :discountSlice,
+  count : countSlice
 })
 
 export const store = configureStore({

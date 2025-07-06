@@ -240,6 +240,16 @@ export async function deleteDiscount(req, res) {
     }
 }
 
+export async function countActiveDiscount(req, res) {
+    try {
+        const count = await Discount.countDocuments({ active : true });
+        console.log("Discount",count)
+        res.status(200).json({ count });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to count discounts' });
+    }
+};
 
 
 
@@ -250,5 +260,6 @@ export default {
     editDiscount,
     getAllDiscounts,
     findDiscountByBookId,
-    deleteDiscount
+    deleteDiscount,
+    countActiveDiscount
 }
