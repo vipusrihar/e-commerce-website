@@ -77,10 +77,8 @@ const orderSlice = createSlice({
         },
         changeOrderStatusSuccess: (state, action) => {
             state.isLoading = false;
-            const orderIndex = state.orders.findIndex(order => order.id === action.payload.id);
-            if (orderIndex !== -1) {
-                state.orders[orderIndex] = action.payload;
-            }
+            state.orders = state.orders.map(order =>
+                order._id === action.payload._id ? action.payload : order)
             state.success = true;
         },
         changeOrderStatusFailure: (state, action) => {
@@ -102,6 +100,7 @@ export const {
     getAllOrdersFailure, getAllOrdersStart, getAllOrdersSuccess,
     getOrderByIdStart, getOrderByIdSuccess, getOrderByIdFailure,
     getOrderByUserIDStart, getOrderByUserIDSuccess, getOrderByUserIDFailure,
+    changeOrderStatusFailure, changeOrderStatusStart, changeOrderStatusSuccess,
     clearOrderState
 } = orderSlice.actions;
 

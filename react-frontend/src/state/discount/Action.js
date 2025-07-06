@@ -117,20 +117,21 @@ export const updateDiscountStatusById = (id, active) => async (dispatch) => {
 };
 
 
-
 export const findDiscountByBookId = (bookId) => async (dispatch) => {
     dispatch(getDiscountByBookIdStart());
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/discounts/book/${bookId}`, {
+        const response = await fetch(`${API_URL}/discounts/byBook/${bookId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+        console.log(response);
         if (!response.ok) {
             throw new Error('Failed to find discount by book ID');
         }
         const data = await response.json();
+        console.log(data);
         dispatch(getDiscountByBookIdSuccess(data));
     } catch (error) {
         dispatch(getDiscountByBookIdFailure(error.message));

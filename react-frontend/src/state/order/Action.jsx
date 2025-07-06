@@ -1,6 +1,6 @@
 import {
     getAllOrdersStart, getAllOrdersFailure, getAllOrdersSuccess,
-    getOrderByIdStart
+    getOrderByIdStart, changeOrderStatusStart, changeOrderStatusFailure, changeOrderStatusSuccess
 } from '../order/orderSlice'
 import { api, API_URL } from '../../config/API';
 
@@ -34,7 +34,7 @@ export const getAllOrders = () => async (dispatch) => {
 
 export const getOrdersByUserID = (userId) => async (dispatch) => {
     dispatch(getOrderByIdStart());
-    console.log("Fetching orders of ",userId);
+    console.log("Fetching orders of ", userId);
     const token = localStorage.getItem("token");
     console.log("Token is present");
 
@@ -57,16 +57,10 @@ export const getOrdersByUserID = (userId) => async (dispatch) => {
 export const getOrderById = (orderId) => async (dispatch) => {
     dispatch(getAllOrdersStart());
     console.log("Fetching order by ID:", orderId);
-    const token = localStorage.getItem("token");
-    if (!token) {
-        const message = "No authentication token found. Please log in.";
-        dispatch(getAllOrdersFailure(message));
-        console.error("Fetch order error:", message);
-        return;
-    }
-    console.log("Token is present");
 
     try {
+        const token = localStorage.getItem("token");
+        console.log("Token is present");
         const response = await api.get(`/orders/${orderId}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -81,3 +75,27 @@ export const getOrderById = (orderId) => async (dispatch) => {
         console.error("Fetch order error:", message);
     }
 }
+
+export const changeOrderStatus = (orderId, orderStatus) => async (dispatch) => {
+    dispatch(changeOrderStatusStart());
+    console.log("Fetching order by ID:", orderId);
+    try {
+        const token = localStorage.getItem("token");
+        console.log("Token is present");
+
+        const response = await api.put(`/orders/${orderId}`, { orderStatus }, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        );
+        console.log("Order change:", response);
+        dispatch(changeOrderStatusSuccess(response.data));
+    } catch (error) {
+        const message =
+            error.response?.data?.message || error.message || "Failed to change order status";
+        dispatch(changeOrderStatusFailure(message));
+        console.error("Fetch order error:", message);
+    }
+};
+

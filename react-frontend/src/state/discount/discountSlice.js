@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialValues = {
   discounts: [],
-  selectedDiscounts: [],
+  discountsByBookId: {},
   error: null,
   success: null,
   isLoading: false,
@@ -86,8 +86,15 @@ const discountSlice = createSlice({
     },
     getDiscountByBookIdSuccess: (state, action) => {
       state.isLoading = false;
-      state.selectedDiscounts = action.payload;
+
+      const discountsArray = action.payload; 
+      discountsArray.forEach((discount) => {
+        discount.books.forEach((bookId) => {
+          state.discountsByBookId[bookId] = discount;
+        });
+      });
     },
+
     getDiscountByBookIdFailure: (state, action) => {
       state.isLoading = false;
       state.error = action.payload || "Failed to fetch by book ID.";
@@ -95,22 +102,22 @@ const discountSlice = createSlice({
 
 
 
-  // Delete Discount by ID
-  deleteDiscountStart: (state) => {
-    state.isLoading = true;
-    state.error = null;
-    state.success = false; // Optional: reset success flag on start
+    // Delete Discount by ID
+    deleteDiscountStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.success = false; // Optional: reset success flag on start
+    },
+    deleteDiscountSuccess: (state) => {
+      state.isLoading = false;
+      state.success = true;
+    },
+    deleteDiscountFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload; // Set error from action
+      state.success = false;
+    }
   },
-  deleteDiscountSuccess: (state) => {
-    state.isLoading = false;
-    state.success = true;
-  },
-  deleteDiscountFailure: (state, action) => {
-    state.isLoading = false;
-    state.error = action.payload; // Set error from action
-    state.success = false;
-  }
-},
 
 });
 
