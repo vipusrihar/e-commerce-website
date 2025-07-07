@@ -24,7 +24,7 @@ export async function createReview(req, res) {
 //get all reviews
 export async function getAllReviews(req, res) {
     try {
-        const reviews = await find()
+        const reviews = await Review.find()
             .populate('user', 'name')
             .populate('book', 'title');
 
@@ -37,7 +37,7 @@ export async function getAllReviews(req, res) {
 //get reviews by book ID
 export async function getReviewsByBook(req, res) {
     try {
-        const reviews = await find({ book: req.params.bookId })
+        const reviews = await Review.find({ book: req.params.bookId })
             .populate('book', 'title')
             .populate('user', 'name');
 
@@ -50,7 +50,7 @@ export async function getReviewsByBook(req, res) {
 // Update a review (only if it's the user’s own review)
 export async function updateReview(req, res) {
     try {
-        const review = await findOneAndUpdate(
+        const review = await Review.findOneAndUpdate(
             { _id: req.params.id, user: req.user.id },
             req.body,
             { new: true, runValidators: true }
@@ -87,7 +87,7 @@ export async function getReviewsByUser(req, res) {
 // Delete a review (only if it's the user’s own review)
 export async function deleteReview(req, res) {
     try {
-        const deleted = await findOneAndDelete({
+        const deleted = await Review.findOneAndDelete({
             _id: req.params.id,
             user: req.user.id
         });

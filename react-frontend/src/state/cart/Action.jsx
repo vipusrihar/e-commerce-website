@@ -1,7 +1,8 @@
 import { API_URL } from "../../config/API";
 import {
     addCartItemStart, addCartItemSuccess, addCartItemFailure,
-    getCartItemsStart, getCartItemsSuccess, getCartItemsFailure
+    getCartItemsStart, getCartItemsSuccess, getCartItemsFailure,
+    clearCartState
 } from "./carttSlice"
 
 
@@ -26,6 +27,8 @@ export const addCartItem = (productId, quantity, userId) => async (dispatch) => 
             throw new Error(errorData.message || 'Failed to add item to cart');
         }
         const data = await response.json();
+        // dispatch(addCartItemSuccess(data));
+
         dispatch(getCartByUserId(userId));
         console.log("Item added to cart successfully:", data);
     } catch (error) {
@@ -60,3 +63,35 @@ export const getCartByUserId = (userId) => async (dispatch) => {
         dispatch(getCartItemsFailure(error.message));
     }
 }
+
+export const clearCartByUserId = (userId) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/users/${userId}/cart/clear`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.error("Invalid JSON response:", jsonError);
+      throw new Error("Unexpected response from server");
+    }
+
+    console.log("API response:", data);
+
+    if (response.ok) {
+      dispatch(clearCartState());
+    } else {
+      console.error("Failed with status:", response.status, data.message);
+    }
+  } catch (error) {
+    console.error("Failed to clear cart error:", error.message);
+  }
+};
+

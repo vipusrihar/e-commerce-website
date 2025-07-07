@@ -7,5 +7,6 @@ const router = express.Router({ mergeParams: true });
 
 router.post('/addProduct', auth, cartController.addProductCartByUserId);
 router.get('/getCart', auth, cartController.getCartByUserId);
+router.put('/clear', auth, cartController.clearAllProductsOfCart);
 
 export default router;

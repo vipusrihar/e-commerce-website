@@ -15,6 +15,9 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Oreder must have total price']
     },
+    phoneNo: {
+        type: Number,
+    },
     shippingAddress: {
         street: String,
         city: String,
@@ -24,7 +27,7 @@ const orderSchema = new mongoose.Schema({
     },
     orderStatus: {
         type: String,
-        enum: ['processing', 'confirmed' ,'shipped', 'delivered', 'cancelled'],
+        enum: ['processing', 'confirmed', 'shipped', 'delivered', 'cancelled'],
         default: 'processing'
     },
     orderdAt: {
@@ -34,4 +37,4 @@ const orderSchema = new mongoose.Schema({
 })
 
 const Order = mongoose.model('Order', orderSchema);
-export default  Order;
+export default Order;

@@ -10,7 +10,7 @@ import { addCartItem, getCartByUserId } from '../state/cart/Action';
 import CloseIcon from '@mui/icons-material/Close';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import RemoveTwoToneIcon from '@mui/icons-material/RemoveTwoTone';
-import OrderForm from './orderForm';
+import OrderForm from './OrderForm';
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -136,9 +136,6 @@ const CartPage = () => {
             user={user}
             cartItems={cartItems}
             setOpen={setOpen}
-            onSubmit={(orderDetails) => {
-              console.log("Order placed:", orderDetails);
-            }}
           />
         </Box>
       </Modal>

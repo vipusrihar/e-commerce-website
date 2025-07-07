@@ -66,7 +66,37 @@ export async function addProductCartByUserId(req, res) {
 }
 
 
+export async function clearAllProductsOfCart(req, res) {
+    try {
+        const { userId } = req.params;
+
+        console.log("Received userId:", userId);
+
+        const cart = await Cart.findOne({ user: userId });
+
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found for the user" });
+        }
+
+        cart.items = [];
+        await cart.save();
+
+        console.log("Cart cleared:", cart);
+
+        res.status(200).json({ message: "All products removed from cart successfully", cart });
+    } catch (error) {
+        console.error("Error clearing cart:", error);
+        res.status(500).json({
+            message: "Failed to clear the cart",
+            error: error.message,
+        });
+    }
+}
+
+
+
 export default {
     getCartByUserId,
-    addProductCartByUserId
+    addProductCartByUserId,
+    clearAllProductsOfCart
 };

@@ -1,8 +1,37 @@
 import {
     getAllOrdersStart, getAllOrdersFailure, getAllOrdersSuccess,
-    getOrderByIdStart, changeOrderStatusStart, changeOrderStatusFailure, changeOrderStatusSuccess
+    changeOrderStatusStart, changeOrderStatusFailure, changeOrderStatusSuccess,
+    getOrderByIdSuccess, getOrderByIdStart, getOrderByIdFailure,
+    getOrderByUserIDStart, getOrderByUserIDSuccess, getOrderByUserIDFailure,
+    createOrderStart,
+    createOrderSuccess
 } from '../order/orderSlice'
 import { api, API_URL } from '../../config/API';
+import { clearCartState } from '../cart/carttSlice';
+
+export const createOrder = (orderDetails) => async (dispatch) => {
+    console.log(orderDetails);
+    dispatch(createOrderStart());
+    try {
+        const token = localStorage.getItem('token');
+        const response = await api.post('/orders/', orderDetails ,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        if(response.status === 201){
+            
+        }
+        dispatch(createOrderSuccess(response.data));
+        dispatch(clearCartState());
+    } catch (error) {
+        const message =
+            error.response?.data?.message || error.message || "Failed to create order";
+        dispatch(getAllOrdersFailure(message));
+        console.error("Fetch orders error:", message);
+        
+    }
+}
 
 export const getAllOrders = () => async (dispatch) => {
     dispatch(getAllOrdersStart());
@@ -33,7 +62,7 @@ export const getAllOrders = () => async (dispatch) => {
 }
 
 export const getOrdersByUserID = (userId) => async (dispatch) => {
-    dispatch(getOrderByIdStart());
+    dispatch(getOrderByUserIDStart());
     console.log("Fetching orders of ", userId);
     const token = localStorage.getItem("token");
     console.log("Token is present");
@@ -45,17 +74,17 @@ export const getOrdersByUserID = (userId) => async (dispatch) => {
             }
         });
         console.log("Orders fetched :", response.data);
-        dispatch(getAllOrdersSuccess({ orders: response.data }));
+        dispatch(getOrderByUserIDSuccess({ orders: response.data }));
     } catch (error) {
         const message =
             error.response?.data?.message || error.message || "Failed to fetch orders";
-        dispatch(getAllOrdersFailure(message));
+        dispatch(getOrderByUserIDFailure(message));
         console.error("Fetch orders error:", message);
     }
 }
 
 export const getOrderById = (orderId) => async (dispatch) => {
-    dispatch(getAllOrdersStart());
+    dispatch(getOrderByIdStart());
     console.log("Fetching order by ID:", orderId);
 
     try {
@@ -67,11 +96,11 @@ export const getOrderById = (orderId) => async (dispatch) => {
             }
         });
         console.log("Order fetched:", response.data);
-        dispatch(getAllOrdersSuccess({ orders: [response.data] }));
+        dispatch(getOrderByIdSuccess({ orders: [response.data] }));
     } catch (error) {
         const message =
             error.response?.data?.message || error.message || "Failed to fetch order";
-        dispatch(getAllOrdersFailure(message));
+        dispatch(getOrderByIdFailure(message));
         console.error("Fetch order error:", message);
     }
 }

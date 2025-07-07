@@ -43,16 +43,16 @@ const orderSlice = createSlice({
             state.error = action.payload;
             state.success = false;
         },
-        addOrderStart: (state) => {
+        createOrderStart: (state) => {
             state.isLoading = true;
             state.error = null;
         },
-        addOrderSuccess: (state, action) => {
+        createOrderSuccess: (state, action) => {
             state.isLoading = false;
             state.orders.push(action.payload);
             state.success = true;
         },
-        addOrderFailure: (state, action) => {
+        createOrderFailure: (state, action) => {
             state.isLoading = false;
             state.error = action.payload;
             state.success = false;
@@ -101,6 +101,7 @@ export const {
     getOrderByIdStart, getOrderByIdSuccess, getOrderByIdFailure,
     getOrderByUserIDStart, getOrderByUserIDSuccess, getOrderByUserIDFailure,
     changeOrderStatusFailure, changeOrderStatusStart, changeOrderStatusSuccess,
+    createOrderFailure, createOrderStart, createOrderSuccess,
     clearOrderState
 } = orderSlice.actions;
 

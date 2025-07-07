@@ -1,51 +1,60 @@
 import Order from '../models/Order.js';
 import OrderItem from '../models/OrderItem.js';
+import Book from '../models/Book.js'
+import Cart from '../models/Cart.js';
 
 // Create a new Order
 export async function createOrder(req, res) {
+
   try {
     const { user, items, ...otherFields } = req.body;
 
     let totalPrice = 0;
-    const orderItems = await Promise.all(
-      items.map(async (item) => {
-        const product = await _findById(item.book); 
-        if (!product) {
-          throw new Error(`Product not found with ID ${item.book}`);
-        }
+    const orderItems = [];
 
-        const orderItem = new OrderItem({
-          product: item.book,
-          quantity: item.quantity
-        });
+    for (const item of items) {
+      const product = await Book.findById(item.book); // No session
+      if (!product) {
+        throw new Error(`Product not found with ID ${item.book}`);
+      }
+      if (product.stock < item.quantity) {
+        throw new Error(`Not enough stock for "${product.title}"`);
+      }
 
-        await orderItem.save();
-        totalPrice += product.price * item.quantity;
+      // Reduce stock
+      product.stock -= item.quantity;
+      await product.save(); 
 
-        return orderItem._id;
-      })
-    );
+      const orderItem = new OrderItem({ product: item.book, quantity: item.quantity });
+      await orderItem.save();
+      totalPrice += product.price * item.quantity;
+      orderItems.push(orderItem._id);
+    }
 
-    const order = new Order({
-      user,
-      items: orderItems,
-      totalPrice,
-      ...otherFields
-    });
+    // Create the order
+    const order = new Order({ user, items: orderItems, totalPrice, ...otherFields });
+    await order.save(); 
 
-    await order.save();
+    // clear the cart for the user
+    const cart = await Cart.findOne({ user }); 
+    if (cart) {
+      cart.items = [];
+      await cart.save(); 
+    }
+
     res.status(201).json(order);
   } catch (err) {
+
     res.status(400).json({ message: err.message });
   }
 }
 
 // get all orders
-export async function findAllOrders(req,res) {
-  try{
+export async function findAllOrders(req, res) {
+  try {
     const orders = await Order.find();
     res.status(200).json(orders);
-  }catch{
+  } catch(err) {
     res.status(500).json({ message: err.message });
   }
 }
@@ -53,11 +62,11 @@ export async function findAllOrders(req,res) {
 // Get Order by ID with populated items and user
 export async function findOrderById(req, res) {
   try {
-    const order = await findById(req.params.id)
-      .populate('user', 'name email') // populate user fields you want
+    const order = await Order.findById(req.params.id)
+      .populate('user', 'name email') 
       .populate({
         path: 'items',
-        populate: { path: 'book' } // assuming OrderItem has product ref
+        populate: { path: 'book' } 
       });
 
     if (!order) return res.status(404).json({ message: 'Order not found' });
@@ -73,7 +82,6 @@ export async function findOrdersByUser(req, res) {
     const orders = await Order.find({ user: req.params.userId })
       .populate('items')
       .populate('user', 'name email');
-    console.log(orders)
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -82,7 +90,7 @@ export async function findOrdersByUser(req, res) {
 
 // Update order status by Order ID (e.g. shipped, delivered)
 export async function updateOrderStatus(req, res) {
-  console.log( req.body)
+  console.log(req.body)
   try {
     const { orderStatus } = req.body;
     const validStatuses = ['processing', 'shipped', 'delivered', 'cancelled'];
@@ -108,10 +116,12 @@ export async function updateOrderStatus(req, res) {
 // Delete order by ID
 export async function deleteOrder(req, res) {
   try {
-    const order = await findById(req.params.id);
+    const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: 'Order not found' });
-    await deleteMany({ _id: { $in: order.items } });
-    await findByIdAndDelete(req.params.id);
+
+    await OrderItem.deleteMany({ _id: { $in: order.items } }); // ✅ fixed
+    await Order.findByIdAndDelete(req.params.id);
+
     res.status(200).json({ message: 'Order and associated items deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -119,15 +129,16 @@ export async function deleteOrder(req, res) {
 }
 
 
+
 export async function countOrders(req, res) {
-    try {
-        const count = await Order.countDocuments();
-        console.log("Order",count)
-        res.status(200).json({ count });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to count orders' });
-    }
+  try {
+    const count = await Order.countDocuments();
+    console.log("Order", count)
+    res.status(200).json({ count });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to count orders' });
+  }
 };
 
 
