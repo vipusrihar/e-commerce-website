@@ -133,7 +133,8 @@ const BooksList = () => {
   const filteredBooks = books.filter((book) => {
     const matchesSearch =
       book.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchText.toLowerCase())
+      book.author.toLowerCase().includes(searchText.toLowerCase()) ||
+      book.isbn.includes(searchText)
     return matchesSearch;
   });
 
@@ -156,7 +157,7 @@ const BooksList = () => {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search..........By book Name or By Author Name"
+              placeholder="Search..........By book Name or By Author Name or By ISBN number"
               inputProps={{ 'aria-label': 'search' }}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCartByUserId } from '../state/cart/Action';
-import { getReviewsbyUserID } from '../state/review/Action';
+// import { getReviewsbyUserID } from '../state/review/Action';
 import { getOrdersByUserID } from '../state/order/Action';
 
 const DashboardPage = () => {
@@ -20,14 +20,18 @@ const DashboardPage = () => {
 
   const cartItems = useSelector((store) => store.cart.cartItems);
   const orders = useSelector((store) => store.orders.orders);
-  const reviews = useSelector((store) => store.reviews.reviews);
+  // const reviews = useSelector((store) => store.reviews.reviews);
 
-  const currentOrderStatus = ''
+  const currentOrders = orders.filter((order) => {
+    if (order.orderStatus !== 'delivered') {
+      return order
+    }
+  })
 
   useEffect(() => {
     if (userId) {
       dispatch(getCartByUserId(userId));
-      dispatch(getReviewsbyUserID(userId));
+      // dispatch(getReviewsbyUserID(userId));
       dispatch(getOrdersByUserID(userId));
     }
   }, [dispatch, userId]);
@@ -40,10 +44,21 @@ const DashboardPage = () => {
 
       <Paper elevation={3} sx={{ p: 2, mt: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Current Order Status
+          Current Orders
         </Typography>
-        <Typography>{currentOrderStatus}</Typography>
+        <List>
+          {currentOrders?.length > 0 ? (
+            currentOrders.map((order) => (
+              <ListItem key={order._id}>
+                <ListItemText primary={`Order ID: ${order._id}`} secondary={`Status: ${order.orderStatus}`} />
+              </ListItem>
+            ))
+          ) : (
+            <Typography variant="body2">No pending orders.</Typography>
+          )}
+        </List>
       </Paper>
+
 
       <Grid container spacing={2} sx={{ mt: 3 }}>
         {/* Orders */}
@@ -56,9 +71,10 @@ const DashboardPage = () => {
               {orders?.length > 0 ? (
                 orders.map((order, index) => (
                   <ListItem key={index}>
+                    {console.log(order)}
                     <ListItemText
                       primary={`Order ID: ${order._id}`}
-                      secondary={`Status: ${order.status}`}
+                      secondary={`Status: ${order.orderStatus} `}
                     />
                   </ListItem>
                 ))
@@ -69,7 +85,7 @@ const DashboardPage = () => {
           </Paper>
         </Grid>
 
-        <Grid size={4}>
+        {/* <Grid size={4}>
           <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Your Reviews
@@ -89,7 +105,7 @@ const DashboardPage = () => {
               )}
             </List>
           </Paper>
-        </Grid>
+        </Grid> */}
 
 
         <Grid size={4}>
@@ -100,10 +116,16 @@ const DashboardPage = () => {
             <List dense>
               {cartItems?.length > 0 ? (
                 cartItems.map((item, index) => (
-                  <ListItem key={index}>
+                  <ListItem key={item._id || index} sx={{ borderWidth: 1, display: 'flex', alignItems: 'center' , marginBottom:0.5}}>
                     <ListItemText
                       primary={item.book?.title || 'Unknown Book'}
                       secondary={`Quantity: ${item.quantity}`}
+                      sx={{ flexGrow: 1 }}
+                    />
+                    <img
+                      src={item?.book?.image || ''} 
+                      alt={item.book?.title || 'Book Cover'}
+                      style={{ width: '50px', height: 'auto', marginLeft: '16px' }}
                     />
                   </ListItem>
                 ))

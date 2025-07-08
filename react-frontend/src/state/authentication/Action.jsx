@@ -8,7 +8,7 @@ import axios from "axios";
 import { clearBookState } from "../book/bookSlice";
 import { clearCartState } from "../cart/carttSlice";
 import { clearOrderState } from "../order/orderSlice";
-import { clearReviewState } from "../review/reviewSlice";
+// import { clearReviewState } from "../review/reviewSlice";
 import { clearUserState } from "../user/userSlice";
 
 export const loginUser = (email, password, navigate) => async (dispatch) => {
@@ -65,7 +65,7 @@ export const logoutUser = (navigate) => async (dispatch) => {
   dispatch(clearBookState());
   dispatch(clearCartState());
   dispatch(clearOrderState());
-  dispatch(clearReviewState());
+  // dispatch(clearReviewState());
   dispatch(clearUserState());
   alert("You have been logged out.");
   navigate("/");

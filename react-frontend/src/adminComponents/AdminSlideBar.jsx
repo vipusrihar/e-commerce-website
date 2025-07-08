@@ -4,7 +4,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import ViewStreamIcon from '@mui/icons-material/ViewStream';
 import DiscountIcon from '@mui/icons-material/Discount';
-import ReviewsIcon from '@mui/icons-material/Reviews';
+// import ReviewsIcon from '@mui/icons-material/Reviews';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../state/authentication/Action';
@@ -15,7 +15,7 @@ const sliderParts = [
   { title: "Users", icon: <SupervisedUserCircleIcon />, path: '/adminDashboard/users' },
   { title: "Orders", icon: <ViewStreamIcon />, path: '/adminDashboard/orders' },
   { title: "Discounts", icon: <DiscountIcon />, path: '/adminDashboard/discounts' },
-  { title: "Reviews", icon: <ReviewsIcon />, path: '/adminDashboard/reviews' },
+  // { title: "Reviews", icon: <ReviewsIcon />, path: '/adminDashboard/reviews' },
 ];
 
 const AdminSlideBar = () => {

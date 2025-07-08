@@ -5,7 +5,7 @@ import OrdersPage from '../adminComponents/OrdersPage'
 import BooksPage from '../adminComponents/BooksPage';
 import DiscountPage from '../adminComponents/DiscountPage';
 import UsersPage from '../adminComponents/UsersPage';
-import ReviewsPage from '../adminComponents/ReviewsPage';
+// import ReviewsPage from '../adminComponents/ReviewsPage';
 import AdminDashboardPage from '../adminComponents/AdminDashboardPage';
 
 const AdminPage = () => {
@@ -28,7 +28,7 @@ const AdminPage = () => {
             <Route path="/books" element={<BooksPage />} />
             <Route path="/discounts" element={<DiscountPage />} />
             <Route path="/users" element={<UsersPage />} />
-            <Route path="/reviews" element={<ReviewsPage />} />
+            {/* <Route path="/reviews" element={<ReviewsPage />} /> */}
           </Routes>
         </div>
       </div>
