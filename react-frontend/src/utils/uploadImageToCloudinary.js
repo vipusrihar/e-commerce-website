@@ -1,19 +1,24 @@
-const upload_preset = "online_Food"
-const cloud_name = "dymiyk4zl"
-const apiUrl = "https://api.cloudinary.com/v1_1/dymiyk4zl/image/upload";
-
+const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const upload_preset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const apiUrl = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
 
 export const uploadImageToCloudinary = async (file) => {
+
     const data = new FormData();
-    data.append("file",file);
-    data.append("upload_preset",upload_preset);
-    data.append("cloud_name",cloud_name);
+    data.append("file", file);
+    data.append("upload_preset", upload_preset);
 
-    const res = await fetch (apiUrl, {
-        method :"POST",
-        body : data
-    });
+    try {
+        const res = await fetch(apiUrl, { method: "POST", body: data, });
 
-    const fileData = await res.json();
-    return fileData.url;
-}
+        if (!res.ok) {
+            throw new Error("Image upload failed");
+        }
+
+        const fileData = await res.json();
+        return fileData.url;
+    } catch (err) {
+        console.error("Cloudinary upload error:", err);
+        return null;
+    }
+};

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const { connect, connection } = mongoose;
 import { config } from 'dotenv';
 
-config({ path: './config/config.env' });
+config({ path: './config/.env' });
 
 
 console.log('DATABASE:', process.env.DATABASE);
