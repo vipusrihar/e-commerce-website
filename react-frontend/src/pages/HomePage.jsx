@@ -14,7 +14,8 @@ const HomePage = () => {
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         minHeight: '100vh',
-        marginTop:0
+        marginTop: 0,
+        paddingBottom: 10,
       }}
     >
       <BooksList />
