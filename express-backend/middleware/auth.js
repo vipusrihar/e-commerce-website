@@ -31,5 +31,4 @@ const userAuth = () => auth(['USER']);
 // Specific auth middlewares for admin or user
 const adminOrUserAuth = () => auth(['ADMIN', 'USER']);
 
-
-export {auth, adminAuth, userAuth, adminOrUserAuth};
+export { auth, adminAuth, userAuth, adminOrUserAuth };

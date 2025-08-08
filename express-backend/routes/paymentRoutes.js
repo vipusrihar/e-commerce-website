@@ -6,10 +6,10 @@ const router = Router();
 import paymentController from '../controllers/paymentController.js';
 import { adminOrUserAuth, userAuth } from '../middleware/auth.js';
 
-router.post('/', userAuth, paymentController.createPayment);
-router.get('/payment/:id', adminOrUserAuth, paymentController.getPaymentById);
+router.post('/', userAuth(), paymentController.createPayment);
+router.get('/payment/:id', adminOrUserAuth(), paymentController.getPaymentById);
 // router.delete('/:id',auth,paymentController.deletePayment);
-router.put('/:userId/status', adminOrUserAuth, paymentController.updatePaymentStatus);
-router.get('/order/:orderId', adminOrUserAuth, paymentController.getPaymentsByOrderId);
+router.put('/:userId/status', adminOrUserAuth(), paymentController.updatePaymentStatus);
+router.get('/order/:orderId', adminOrUserAuth(), paymentController.getPaymentsByOrderId);
 
 export default router;
