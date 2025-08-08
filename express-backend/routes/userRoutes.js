@@ -1,14 +1,14 @@
 import { Router } from 'express';
 const router = Router();
 import { findAllUsers, findUserById, findUserByEmail, updateUser, deleteUser, countUsers } from '../controllers/userController.js';
-import auth from '../middleware/auth.js';
+import { adminAuth, adminOrUserAuth, userAuth } from '../middleware/auth.js';
 
-router.get('/count', auth, countUsers);
-router.get('/email/:email', auth, findUserByEmail);
-router.get('/', auth, findAllUsers);
-router.get('/:id', auth, findUserById);
-router.put('/:id', auth, updateUser);
-router.delete('/:id', auth, deleteUser);
+router.get('/count', adminAuth, countUsers);
+router.get('/email/:email', adminOrUserAuth, findUserByEmail);
+router.get('/', adminAuth, findAllUsers);
+router.get('/:id', adminOrUserAuth, findUserById);
+router.put('/:id', adminOrUserAuth, updateUser);
+router.delete('/:id', userAuth, deleteUser);
 
 
 export default router;

@@ -1,16 +1,16 @@
 import express from 'express';
 import discountCountroller from '../controllers/discountCountroller.js';
-import auth from '../middleware/auth.js';
+import { adminAuth, auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/createDiscount',auth,discountCountroller.createDiscount);
+router.post('/createDiscount', adminAuth, discountCountroller.createDiscount);
 router.get('/getAllDiscounts', auth, discountCountroller.getAllDiscounts);
-router.get('/byBook/:bookId',auth,discountCountroller.findDiscountByBookId);
-router.put('/editDiscount/:id', auth, discountCountroller.editDiscount);
-router.put('/updateStatus/:id',auth,discountCountroller.updateDiscountStatusById);
-router.delete('/:id', auth, discountCountroller.deleteDiscount);
-router.get('/count',auth,discountCountroller.countActiveDiscount)
+router.get('/byBook/:bookId', auth, discountCountroller.findDiscountByBookId);
+router.put('/editDiscount/:id', adminAuth, discountCountroller.editDiscount);
+router.put('/updateStatus/:id', adminAuth, discountCountroller.updateDiscountStatusById);
+router.delete('/:id', adminAuth, discountCountroller.deleteDiscount);
+router.get('/count', adminAuth, discountCountroller.countActiveDiscount)
 
 
 export default router;
