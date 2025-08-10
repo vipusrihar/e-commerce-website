@@ -2,8 +2,8 @@ import pkg from 'jsonwebtoken';
 const { sign } = pkg;
 import { hash, compare } from 'bcryptjs';
 
-import User from "../models/User.js";   
-import Cart from "../models/Cart.js";   
+import User from "../models/User.js";
+import Cart from "../models/Cart.js";
 
 export async function signup(req, res) {
   const { name, email, password, role, address } = req.body;
@@ -42,7 +42,12 @@ export async function login(req, res) {
     // Create JWT token
     const token = sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    res.json({
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS-only in production
+      sameSite: 'strict',
+      maxAge: 3600000
+    }).json({
       token,
       user: { id: user._id, name: user.name, email: user.email, role: user.role }
     });

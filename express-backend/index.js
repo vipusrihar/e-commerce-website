@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/.env' });
+import helmet from 'helmet';
 
 import express from 'express';
 import cors from 'cors';
@@ -7,7 +8,7 @@ import connectDB from './config/db.js';
 
 
 import authRoutes from './routes/auth.js';
-import auth from './middleware/auth.js';
+import {auth} from './middleware/auth.js';
 
 import bookRoutes from './routes/bookRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -22,6 +23,7 @@ connectDB();
 const app = express();
 
 app.use(cors());
+app.use(helmet()); // Security headers
 app.use(express.json());
 
 // Routes
