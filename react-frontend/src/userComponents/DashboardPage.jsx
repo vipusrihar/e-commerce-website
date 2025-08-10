@@ -28,6 +28,12 @@ const DashboardPage = () => {
     }
   })
 
+  const deliveredOrders = orders.filter((order) => {
+    if (order.orderStatus === 'delivered') {
+      return order
+    }
+  });
+
   useEffect(() => {
     if (userId) {
       dispatch(getCartByUserId(userId));
@@ -48,9 +54,14 @@ const DashboardPage = () => {
         </Typography>
         <List>
           {currentOrders?.length > 0 ? (
-            currentOrders.map((order) => (
-              <ListItem key={order._id}>
-                <ListItemText primary={`Order ID: ${order._id}`} secondary={`Status: ${order.orderStatus}`} />
+            currentOrders.map((order, index) => (
+              <ListItem
+                key={index}
+                sx={{ display: 'block' }}
+              >
+                <Typography variant="body2"> OrderedAt: {order?.orderdAt ? order.orderdAt.split("T")[0] : 'Unknown Date'}</Typography>
+                <Typography variant="body2">Price: {order.totalPrice}</Typography>
+                <Typography variant="body2">Status: {order.orderStatus}</Typography>
               </ListItem>
             ))
           ) : (
@@ -65,21 +76,24 @@ const DashboardPage = () => {
         <Grid size={4}>
           <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
-              Orders
+              Delivered Orders
             </Typography>
             <List dense>
-              {orders?.length > 0 ? (
-                orders.map((order, index) => (
-                  <ListItem key={index}>
-                    {console.log(order)}
-                    <ListItemText
-                      primary={`Order ID: ${order._id}`}
-                      secondary={`Status: ${order.orderStatus} `}
-                    />
+              {deliveredOrders?.length > 0 ? (
+                deliveredOrders.map((order, index) => (
+                  <ListItem
+                    key={index}
+                    sx={{ display: 'block' }}
+                  >
+                    <Typography variant="body2"> OrderedAt: {order?.orderdAt ? order.orderdAt.split("T")[0] : 'Unknown Date'}</Typography>
+                    <Typography variant="body2">Price: {order.totalPrice}</Typography>
+                    <Typography variant="body2">Status: {order.orderStatus}</Typography>
                   </ListItem>
                 ))
+
+
               ) : (
-                <Typography variant="body2">No orders found.</Typography>
+                <Typography variant="body2">No delivered orders found.</Typography>
               )}
             </List>
           </Paper>
@@ -116,14 +130,14 @@ const DashboardPage = () => {
             <List dense>
               {cartItems?.length > 0 ? (
                 cartItems.map((item, index) => (
-                  <ListItem key={item._id || index} sx={{ borderWidth: 1, display: 'flex', alignItems: 'center' , marginBottom:0.5}}>
+                  <ListItem key={item._id || index} sx={{ borderWidth: 1, display: 'flex', alignItems: 'center', marginBottom: 0.5 }}>
                     <ListItemText
                       primary={item.book?.title || 'Unknown Book'}
                       secondary={`Quantity: ${item.quantity}`}
                       sx={{ flexGrow: 1 }}
                     />
                     <img
-                      src={item?.book?.image || ''} 
+                      src={item?.book?.image || ''}
                       alt={item.book?.title || 'Book Cover'}
                       style={{ width: '50px', height: 'auto', marginLeft: '16px' }}
                     />
