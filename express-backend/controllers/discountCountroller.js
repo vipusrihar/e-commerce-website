@@ -52,7 +52,7 @@ export async function editDiscount(req, res) {
         }
 
         if (!appliesToAll && (!books || books.length === 0)) {
-            console.log("error here")
+            console.info("error here")
             return res.status(400).json({ message: 'Please provide at least one book for specific discount' });
 
         }
@@ -206,7 +206,7 @@ export async function deleteDiscount(req, res) {
     try {
 
         const id = req.params.id;
-        console.log(id)
+        console.info(id)
 
         if (!id) {
             return res.status(400).json({ message: 'Discount ID is required' });
@@ -243,7 +243,7 @@ export async function deleteDiscount(req, res) {
 export async function countActiveDiscount(req, res) {
     try {
         const count = await Discount.countDocuments({ active : true });
-        console.log("Discount",count)
+        console.info("Discount",count)
         res.status(200).json({ count });
     } catch (err) {
         console.error(err);

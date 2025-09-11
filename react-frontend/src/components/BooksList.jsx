@@ -126,7 +126,7 @@ const BooksList = () => {
   const handleConfirmAddToCart = () => {
     dispatch(addCartItem(selectedBook._id, quantity, userId));
     alert("Item added to cart successfully!");
-    console.log("Add to Cart:", selectedBook, quantity);
+    console.info("Add to Cart:", selectedBook, quantity);
     setModalOpen(false);
   };
 

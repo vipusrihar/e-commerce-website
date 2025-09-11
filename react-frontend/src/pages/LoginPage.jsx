@@ -1,7 +1,7 @@
 import Modal from "@mui/material/Modal";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Added useLocation
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
@@ -16,8 +16,6 @@ const LoginPage = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [noticeOpen, setNoticeOpen] = useState(false);
-
   const { signIn, getBasicUserInfo, state } = useAuthContext();
 
   const handleClose = () => {
@@ -38,11 +36,11 @@ const LoginPage = () => {
           name: info.username || info.given_name || "Asgardeo User",
           sub: info.sub
         };
-        console.log(asgardeoData)
+        console.info(asgardeoData)
         dispatch(asgardeoLogin(asgardeoData, navigate));
       });
     }
-  }, [state?.isAuthenticated, dispatch, getBasicUserInfo, navigate]);
+  }, [state?.isAuthenticated, dispatch, getBasicUserInfo, navigate]); // Removed location.state
 
   return (
     <Modal
@@ -99,7 +97,7 @@ const LoginPage = () => {
 
           {/* Asgardeo Login Button */}
           <Button
-            onClick={() => setNoticeOpen(true)}
+            onClick={() =>  signIn()}
             sx={{
               backgroundColor: "transparent",
               border: "none",
@@ -117,7 +115,7 @@ const LoginPage = () => {
               sx={{
                 height: 40,
                 border: "2px solid #1976d2",
-                borderRadius: 1,
+                borderRadius: 1, 
                 display: "block",
               }}
             />

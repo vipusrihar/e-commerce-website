@@ -10,7 +10,7 @@ const AddDiscountForm = ({ dialogType, selectedDiscount, handleChange,
 
 
 
-    console.log(selectedDiscount);
+    console.info(selectedDiscount);
 
     const availableBooks = useSelector((store) => store.books.books);
     return (

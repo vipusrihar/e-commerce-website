@@ -17,8 +17,9 @@ const Footer = () => {
 
   return (
     <Box
-      sx={{ backgroundColor: '#A47864', color: ' white', py: 5, }} >
-      <Box sx={{ px: 2, paddingBottom: 4 }}>
+      sx={{ backgroundColor: '#A47864', color: 'white', py: 5 }}
+    >
+      <Box sx={{ px: 1, paddingBottom: 2 }}>
         <Grid container spacing={2}>
           <Grid size={4} paddingLeft={5}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, color: 'white' }} >
@@ -80,7 +81,7 @@ const Footer = () => {
       </Box>
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)' }} />
 
-      <Typography align="center" sx={{ color: 'rgba(255, 255, 255, 0.7)', paddingTop: 4 }}>
+      <Typography align="center" sx={{ color: 'rgba(255, 255, 255, 0.7)', paddingTop: 2 }}>
         &copy; {new Date().getFullYear()} BookTown. All rights reserved.
       </Typography>
 

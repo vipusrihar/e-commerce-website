@@ -8,9 +8,7 @@ import BookDetails from "./components/BookDetails";
 import CartPage from "./userComponents/CartPage";
 import ProfilePage from "./userComponents/ProfilePage";
 import DashboardPage from "./userComponents/DashboardPage";
-import Footer from "./components/Footer";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-
 
 function AppContent() {
   const location = useLocation();
@@ -29,13 +27,8 @@ function AppContent() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-
-        {/* Nested Admin Routes */}
-        <Route path="/adminDashboard/*" element={<AdminPage />}>
-        </Route>
+        <Route path="/adminDashboard/*" element={<AdminPage />} />
       </Routes>
-      {!hideNav && <Footer />}
-
     </>
   );
 }

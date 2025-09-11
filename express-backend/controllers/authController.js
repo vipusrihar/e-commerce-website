@@ -64,11 +64,11 @@ export async function login(req, res) {
 
 // Asgardeo login
 export async function asgardeoLogin(req, res) {
-  console.log(req.body)
+  console.info(req.body)
   try {
     const { email, name, sub } = req.body;
 
-    console.log(email, ' ', name, '  ', sub)
+    console.info(email, ' ', name, '  ', sub)
 
     if (!email || !sub) {
       return res.status(400).json({ error: "Missing email or sub from Asgardeo" });

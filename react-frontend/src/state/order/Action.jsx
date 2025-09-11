@@ -10,7 +10,7 @@ import { api, API_URL } from '../../config/API';
 import { clearCartState } from '../cart/carttSlice';
 
 export const createOrder = (orderDetails) => async (dispatch) => {
-    console.log(orderDetails);
+    console.info(orderDetails);
     dispatch(createOrderStart());
     try {
         const token = localStorage.getItem('token');
@@ -35,7 +35,7 @@ export const createOrder = (orderDetails) => async (dispatch) => {
 
 export const getAllOrders = () => async (dispatch) => {
     dispatch(getAllOrdersStart());
-    console.log("Fetching all orders......");
+    console.info("Fetching all orders......");
     const token = localStorage.getItem("token");
     if (!token) {
         const message = "No authentication token found. Please log in.";
@@ -43,7 +43,7 @@ export const getAllOrders = () => async (dispatch) => {
         console.error("Fetch orders error:", message);
         return;
     }
-    console.log("Token is present");
+    console.info("Token is present");
 
     try {
         const response = await api.get(`/orders`, {
@@ -51,7 +51,7 @@ export const getAllOrders = () => async (dispatch) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log("Orders fetched :", response.data);
+        console.info("Orders fetched :", response.data);
         dispatch(getAllOrdersSuccess({ orders: response.data }));
     } catch (error) {
         const message =
@@ -63,9 +63,9 @@ export const getAllOrders = () => async (dispatch) => {
 
 export const getOrdersByUserID = (userId) => async (dispatch) => {
     dispatch(getOrderByUserIDStart());
-    console.log("Fetching orders of ", userId);
+    console.info("Fetching orders of ", userId);
     const token = localStorage.getItem("token");
-    console.log("Token is present");
+    console.info("Token is present");
 
     try {
         const response = await api.get(`/orders/user/${userId}`, {
@@ -73,7 +73,7 @@ export const getOrdersByUserID = (userId) => async (dispatch) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log("Orders fetched :", response.data);
+        console.info("Orders fetched :", response.data);
         dispatch(getOrderByUserIDSuccess({ orders: response.data }));
     } catch (error) {
         const message =
@@ -85,17 +85,17 @@ export const getOrdersByUserID = (userId) => async (dispatch) => {
 
 export const getOrderById = (orderId) => async (dispatch) => {
     dispatch(getOrderByIdStart());
-    console.log("Fetching order by ID:", orderId);
+    console.info("Fetching order by ID:", orderId);
 
     try {
         const token = localStorage.getItem("token");
-        console.log("Token is present");
+        console.info("Token is present");
         const response = await api.get(`/orders/${orderId}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         });
-        console.log("Order fetched:", response.data);
+        console.info("Order fetched:", response.data);
         dispatch(getOrderByIdSuccess({ orders: [response.data] }));
     } catch (error) {
         const message =
@@ -107,10 +107,10 @@ export const getOrderById = (orderId) => async (dispatch) => {
 
 export const changeOrderStatus = (orderId, orderStatus) => async (dispatch) => {
     dispatch(changeOrderStatusStart());
-    console.log("Fetching order by ID:", orderId);
+    console.info("Fetching order by ID:", orderId);
     try {
         const token = localStorage.getItem("token");
-        console.log("Token is present");
+        console.info("Token is present");
 
         const response = await api.put(`/orders/${orderId}`, { orderStatus }, {
             headers: {
@@ -118,7 +118,7 @@ export const changeOrderStatus = (orderId, orderStatus) => async (dispatch) => {
             }
         }
         );
-        console.log("Order change:", response);
+        console.info("Order change:", response);
         dispatch(changeOrderStatusSuccess(response.data));
     } catch (error) {
         const message =

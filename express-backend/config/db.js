@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 config({ path: './config/.env' });
 
 
-console.log('DATABASE:', process.env.DATABASE);
+console.info('DATABASE:', process.env.DATABASE);
 
 const connectDB = async () => {
   try {
@@ -14,7 +14,7 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("MongoDB connected successfully ✅");
+    console.info("MongoDB connected successfully ✅");
   } catch (error) {
     console.error("MongoDB connection failed ❌", error.message);
     process.exit(1);
@@ -23,21 +23,21 @@ const connectDB = async () => {
 
 
 connection.on('connected', () => {
-  console.log('Mongoose connected to DB');
+  console.info('Mongoose connected to DB');
 });
 
 connection.on('error', (err) => {
-  console.log('Mongoose connection error:', err);
+  console.info('Mongoose connection error:', err);
 });
 
 connection.on('disconnected', () => {
-  console.log('Mongoose disconnected');
+  console.info('Mongoose disconnected');
 });
 
 // Close the Mongoose connection when Node process ends
 process.on('SIGINT', async () => {
   await connection.close();
-  console.log('Mongoose connection closed due to app termination');
+  console.info('Mongoose connection closed due to app termination');
   process.exit(0);
 });
 

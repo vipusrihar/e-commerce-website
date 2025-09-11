@@ -64,7 +64,7 @@ export const getUserById = (id) => async (dispatch) => {
 
 
 export const updateUser = (id, updatedData) => async (dispatch) => {
-    console.log(id,"ed",updatedData)
+    console.info(id,"ed",updatedData)
     dispatch(updateUserStart());
     try {
         const token = localStorage.getItem('token');
@@ -74,7 +74,7 @@ export const updateUser = (id, updatedData) => async (dispatch) => {
             },
         });
 
-        console.log("Update success:", data);
+        console.info("Update success:", data);
         dispatch(updateUserSuccess(data));
 
     } catch (error) {

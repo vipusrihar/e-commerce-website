@@ -4,7 +4,7 @@
 
 // export const getAllReviews = () => async (dispatch) => {
 //     dispatch(getAllReviewsStart());
-//     console.log("Fetching all reviews...");
+//     console.info("Fetching all reviews...");
 
 //     const token = localStorage.getItem("token");
 //     if (!token) {
@@ -21,7 +21,7 @@
 //             },
 //         });
 
-//         console.log("Reviews fetched:", response.data);
+//         console.info("Reviews fetched:", response.data);
 //         dispatch(getAllReviewsSuccess({ reviews: response.data }));
 //     } catch (error) {
 //         const message =
@@ -34,7 +34,7 @@
 
 // export const getReviewsbyUserID = (userId) => async (dispatch) => {
 //     dispatch(getReviewsByUserIDStart());
-//     console.log("Fetching all reviews of ",userId);
+//     console.info("Fetching all reviews of ",userId);
 
 //     const token = localStorage.getItem("token");
 
@@ -45,7 +45,7 @@
 //             },
 //         });
 
-//         console.log("Reviews fetched:", response.data);
+//         console.info("Reviews fetched:", response.data);
 //         dispatch(getReviewsByUserIDSuccess({ reviews: response.data }));
 //     } catch (error) {
 //         const message =

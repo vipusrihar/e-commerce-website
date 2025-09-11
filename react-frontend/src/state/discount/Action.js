@@ -10,7 +10,7 @@ import { API_URL } from '../../config/API';
 
 export const createDiscount = (discount) => async (dispatch) => {
     dispatch(createDiscountStart());
-    console.log("creating discount");
+    console.info("creating discount");
 
     try {
         const token = localStorage.getItem('token');
@@ -28,9 +28,9 @@ export const createDiscount = (discount) => async (dispatch) => {
         }
 
         const data = await response.json();
-        console.log("order Created :", data)
+        console.info("order Created :", data)
         dispatch(createDiscountSuccess(data));
-        console.log("discount created successfully:", data);
+        console.info("discount created successfully:", data);
     } catch (error) {
         console.error("Create discount error:", error.message);
         dispatch(createDiscountFailure(error.message));
@@ -52,7 +52,7 @@ export const getAllDiscounts = () => async (dispatch) => {
             throw new Error('Failed to fetch discounts');
         }
         const data = await response.json();
-        console.log("All discounts ", data)
+        console.info("All discounts ", data)
         dispatch(getAllDiscountsSuccess(data));
     } catch (error) {
         dispatch(getAllDiscountsFailure(error.message));
@@ -61,8 +61,8 @@ export const getAllDiscounts = () => async (dispatch) => {
 
 
 export const editDiscount = (discountId, updatedData) => async (dispatch) => {
-    console.log('discount Id', discountId);
-    console.log("data", updatedData)
+    console.info('discount Id', discountId);
+    console.info("data", updatedData)
     dispatch(editDiscountStart());
     try {
         const token = localStorage.getItem('token');
@@ -74,7 +74,7 @@ export const editDiscount = (discountId, updatedData) => async (dispatch) => {
             },
             body: JSON.stringify(updatedData),
         });
-        console.log(response);
+        console.info(response);
         if (!response.ok) {
             throw new Error('Failed to update discount');
         }
@@ -102,7 +102,7 @@ export const updateDiscountStatusById = (id, active) => async (dispatch) => {
         });
 
         const data = await response.json();
-        console.log('Update Status Response:', data);
+        console.info('Update Status Response:', data);
 
         if (!response.ok) {
             alert(data.message || 'Failed to update discount status')
@@ -126,12 +126,12 @@ export const findDiscountByBookId = (bookId) => async (dispatch) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        console.log(response);
+        console.info(response);
         if (!response.ok) {
             throw new Error('Failed to find discount by book ID');
         }
         const data = await response.json();
-        console.log(data);
+        console.info(data);
         dispatch(getDiscountByBookIdSuccess(data));
     } catch (error) {
         dispatch(getDiscountByBookIdFailure(error.message));

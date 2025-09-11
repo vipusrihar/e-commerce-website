@@ -34,11 +34,11 @@ export const createBook = (bookData) => async (dispatch) => {
 
 export const updateBook = (hashid, bookData) => async (dispatch) => {
     dispatch(updateBookStart());
-    console.log("Fetching books....", hashid);
-    console.log("Book data to update:", bookData);
+    console.info("Fetching books....", hashid);
+    console.info("Book data to update:", bookData);
     try {
         const token = localStorage.getItem('token');
-        console.log("Token:", token);
+        console.info("Token:", token);
         if (!token) {
             throw new Error('User is not authenticated');
         }
@@ -51,7 +51,7 @@ export const updateBook = (hashid, bookData) => async (dispatch) => {
             }
           );
           
-        console.log("Update response:", response);  
+        console.info("Update response:", response);  
         const data = response.data;
         dispatch(updateBookSuccess(data));
         alert('Book updated successfully!');
@@ -65,10 +65,10 @@ export const updateBook = (hashid, bookData) => async (dispatch) => {
 
 export const getAllBooks = () => async (dispatch) => {
     dispatch(getAllBooksStart()); 
-    console.log("Fetching all books...");
+    console.info("Fetching all books...");
     try {
         const response = await axios.get(`${API_URL}/books/`); 
-        console.log("Books fetched", response.data);
+        console.info("Books fetched", response.data);
         dispatch(getAllBooksSuccess({ books: response.data })); 
     } catch (error) {
         const message = error.response?.data?.message || error.message || "Failed to fetch books";
@@ -80,7 +80,7 @@ export const getAllBooks = () => async (dispatch) => {
 
 export const getBookById = (hashid) => async (dispatch) => {
     dispatch(getBookByIdStart()); 
-    console.log("Fetching book with ID:", hashid);
+    console.info("Fetching book with ID:", hashid);
 
     if (!hashid) {
         const message = "hashid is required to fetch book details";
@@ -92,7 +92,7 @@ export const getBookById = (hashid) => async (dispatch) => {
     try {
         const response = await axios.get(`${API_URL}/books/${hashid}`); 
         dispatch(getBookByIdSuccess(response.data));
-        console.log("Book fetched successfully:", response.data);
+        console.info("Book fetched successfully:", response.data);
     } catch (error) {
         const message = error.response?.data?.message || error.message || "Failed to fetch book";
         dispatch(getBookByIdFailure(message)); 
@@ -102,7 +102,7 @@ export const getBookById = (hashid) => async (dispatch) => {
 
 export const deleteBookById = (hashid) => async (dispatch) => {
     dispatch(deleteBookStart());
-    console.log("Deleting book with ID:", hashid);
+    console.info("Deleting book with ID:", hashid);
     try {
         const response = await fetch(`${API_URL}/books/${hashid}`, {
             method: 'DELETE',
@@ -111,7 +111,7 @@ export const deleteBookById = (hashid) => async (dispatch) => {
             }
         });
         const data = await response.json();
-        console.log("Book deleted successfully:", data);
+        console.info("Book deleted successfully:", data);
         alert('Book deleted successfully!');
     } catch (error) {
         console.error("Delete book error:", error.message);

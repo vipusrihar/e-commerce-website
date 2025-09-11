@@ -72,7 +72,7 @@ export async function clearAllProductsOfCart(req, res) {
     try {
         const { userId } = req.params;
 
-        console.log("Received userId:", userId);
+        console.info("Received userId:", userId);
 
         const cart = await Cart.findOne({ user: userId });
 
@@ -83,7 +83,7 @@ export async function clearAllProductsOfCart(req, res) {
         cart.items = [];
         await cart.save();
 
-        console.log("Cart cleared:", cart);
+        console.info("Cart cleared:", cart);
 
         res.status(200).json({ message: "All products removed from cart successfully", cart });
     } catch (error) {

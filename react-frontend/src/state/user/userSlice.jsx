@@ -32,7 +32,7 @@ const userSlice = createSlice({
         },
         getUserByIdSuccess: (state, action) => {
             state.isLoading = false;
-            console.log(action.payload);
+            console.info(action.payload);
             state.selectedUser = action.payload
             state.success = true;
         },

@@ -78,7 +78,7 @@ const BooksPage = () => {
   }
 
   const handleDelete = (hashid) => {
-    console.log("Deleting book with ID:", hashid);
+    console.info("Deleting book with ID:", hashid);
     if (window.confirm(`Are you sure you want to delete this book?`)) {
       dispatch(deleteBookById(hashid));
     }

@@ -8,7 +8,7 @@ import {
 
 export const addCartItem = (productId, quantity, userId) => async (dispatch) => {
     dispatch(addCartItemStart());
-    console.log("Adding item to cart:", productId, "Quantity:", quantity, "User ID:", userId);
+    console.info("Adding item to cart:", productId, "Quantity:", quantity, "User ID:", userId);
 
     try {
         const token = localStorage.getItem('token');
@@ -30,7 +30,7 @@ export const addCartItem = (productId, quantity, userId) => async (dispatch) => 
         // dispatch(addCartItemSuccess(data));
 
         dispatch(getCartByUserId(userId));
-        console.log("Item added to cart successfully:", data);
+        console.info("Item added to cart successfully:", data);
     } catch (error) {
         console.error("Add to cart error:", error.message);
         dispatch(addCartItemFailure(error.message));
@@ -39,7 +39,7 @@ export const addCartItem = (productId, quantity, userId) => async (dispatch) => 
 
 export const getCartByUserId = (userId) => async (dispatch) => {
     dispatch(getCartItemsStart());
-    console.log("Fetching cart for user ID:", userId);
+    console.info("Fetching cart for user ID:", userId);
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/users/${userId}/cart/getCart`, {
@@ -57,7 +57,7 @@ export const getCartByUserId = (userId) => async (dispatch) => {
 
         const data = await response.json();
         dispatch(getCartItemsSuccess(data));
-        console.log("Cart items fetched successfully:", data.items);
+        console.info("Cart items fetched successfully:", data.items);
     } catch (error) {
         console.error("Fetch cart error:", error.message);
         dispatch(getCartItemsFailure(error.message));
@@ -83,7 +83,7 @@ export const clearCartByUserId = (userId) => async (dispatch) => {
       throw new Error("Unexpected response from server");
     }
 
-    console.log("API response:", data);
+    console.info("API response:", data);
 
     if (response.ok) {
       dispatch(clearCartState());

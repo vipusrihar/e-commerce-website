@@ -31,7 +31,7 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
       navigate("/home");
     }
 
-    console.log(response.data);
+    console.info(response.data);
     alert("Login successful!");
   } catch (error) {
     const message = error.response?.data?.message || "Login failed. Please try again.";
@@ -42,12 +42,12 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
 
 export const asgardeoLogin = (asgardeoData, navigate) => async (dispatch) => {
   dispatch(loginStart());
-  console.log("Asgardeo data:", asgardeoData);
+  console.info("Asgardeo data:", asgardeoData);
 
   try {
     const response = await axios.post(`${API_URL}/auth/asgardeo-login`, asgardeoData);
 
-    console.log("Backend response:", response.data);
+    console.info("Backend response:", response.data);
 
     // Check backend response
     if (!response.data || !response.data.token || !response.data.user) {
@@ -69,7 +69,7 @@ export const asgardeoLogin = (asgardeoData, navigate) => async (dispatch) => {
       navigate("/home");
     }
 
-    console.log("Asgardeo login successful!");
+    console.info("Asgardeo login successful!");
   } catch (error) {
     // Fix backend error reading
     const message = error.response?.data?.error || error.message || "Asgardeo login failed. Please try again.";
@@ -81,10 +81,10 @@ export const asgardeoLogin = (asgardeoData, navigate) => async (dispatch) => {
 
 export const registerUser = (userData, navigate) => async (dispatch) => {
   dispatch(registerStart());
-  console.log("Registering user:", userData);
+  console.info("Registering user:", userData);
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
-    console.log("Registration response:", response.data);
+    console.info("Registration response:", response.data);
     dispatch(registerSuccess(response.data));
     alert("Registration successful. Please login.");
     navigate("/login");
@@ -114,7 +114,7 @@ export const logoutUser = (signOut, navigate) => async (dispatch) => {
 
     // Sign out from Asgardeo (redirects the user)
     await signOut({
-      returnTo: window.location.origin + "/",
+      returnTo: window.location + "/",
     });
 
   } catch (error) {
