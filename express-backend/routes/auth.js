@@ -15,5 +15,6 @@ const loginLimiter = rateLimit({
 
 router.post("/signup", authController.signup);
 router.post("/login", loginLimiter, authController.login);
+router.post("/asgardeo-login", authController.asgardeoLogin);
 
 export default router;

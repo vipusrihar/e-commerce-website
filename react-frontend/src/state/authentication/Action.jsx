@@ -1,6 +1,6 @@
 import {
-  loginStart,  loginFailure,  loginSuccess,
-  registerStart,  registerSuccess,  registerFailure,
+  loginStart, loginFailure, loginSuccess,
+  registerStart, registerSuccess, registerFailure,
   logout
 } from "./authSlice";
 import { API_URL } from "../../config/API";
@@ -40,6 +40,44 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
   }
 };
 
+export const asgardeoLogin = (asgardeoData, navigate) => async (dispatch) => {
+  dispatch(loginStart());
+  console.log("Asgardeo data:", asgardeoData);
+
+  try {
+    const response = await axios.post(`${API_URL}/auth/asgardeo-login`, asgardeoData);
+
+    console.log("Backend response:", response.data);
+
+    // Check backend response
+    if (!response.data || !response.data.token || !response.data.user) {
+      throw new Error("Invalid backend response for Asgardeo login");
+    }
+
+    // Dispatch success to Redux
+    dispatch(loginSuccess(response.data));
+
+    // Store JWT in localStorage for persistence
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("auth", JSON.stringify(response.data));
+
+    // Navigate based on role
+    const role = response.data.user.role;
+    if (role === "ADMIN") {
+      navigate("/adminDashboard");
+    } else {
+      navigate("/home");
+    }
+
+    console.log("Asgardeo login successful!");
+  } catch (error) {
+    // Fix backend error reading
+    const message = error.response?.data?.error || error.message || "Asgardeo login failed. Please try again.";
+    console.error("Asgardeo login error:", message);
+
+    dispatch(loginFailure(message));
+  }
+};
 
 export const registerUser = (userData, navigate) => async (dispatch) => {
   dispatch(registerStart());
@@ -58,15 +96,29 @@ export const registerUser = (userData, navigate) => async (dispatch) => {
   }
 };
 
-export const logoutUser = (navigate) => async (dispatch) => {
-  localStorage.removeItem("auth");
-  localStorage.removeItem("token");
-  dispatch(logout());
-  dispatch(clearBookState());
-  dispatch(clearCartState());
-  dispatch(clearOrderState());
-  // dispatch(clearReviewState());
-  dispatch(clearUserState());
-  alert("You have been logged out.");
-  navigate("/");
-}
+export const logoutUser = (signOut, navigate) => async (dispatch) => {
+  try {
+    // Clear any app-managed storage (optional if you don't persist tokens yourself)
+    localStorage.removeItem("auth");
+    localStorage.removeItem("token");
+
+    // Reset Redux state
+    dispatch(logout());
+    dispatch(clearBookState());
+    dispatch(clearCartState());
+    dispatch(clearOrderState());
+    dispatch(clearUserState());
+
+    // Inform the user (optional)
+    alert("You have been logged out.");
+
+    // Sign out from Asgardeo (redirects the user)
+    await signOut({
+      returnTo: window.location.origin + "/",
+    });
+
+  } catch (error) {
+    console.error("Asgardeo logout error:", error);
+  }
+};
+

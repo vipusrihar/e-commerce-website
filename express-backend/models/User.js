@@ -8,15 +8,19 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: [true, 'email is important'],
+        required: [true, 'Email is important'],
         unique: true,
         lowercase: true,
     },
     password: {
         type: String,
-        required: [true, 'password is imporant'],
         minlength: 8,
-        select: false   // Don't include password from queries by default
+        select: false // optional for SSO users
+    },
+    asgardeoId: {
+        type: String,
+        unique: true,
+        sparse: true
     },
     role: {
         type: String,
@@ -30,18 +34,16 @@ const userSchema = new mongoose.Schema({
         country: String,
         zipCode: String
     },
-    phoneNo : {
-        type : Number,
-        minlength : 12,
+    phoneNo: {
+        type: String,
+        minlength: 10
     },
     createdAt: {
         type: Date,
         default: Date.now
     }
-},
-);
-
+});
 
 const User = mongoose.model('User', userSchema);
 
-export default  User;
+export default User;

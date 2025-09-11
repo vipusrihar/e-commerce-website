@@ -15,9 +15,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../state/authentication/Action';
-
-
-
+import { useAuthContext } from '@asgardeo/auth-react';
 
 
 const settings = ['Profile', 'Activity', 'Logout'];
@@ -28,7 +26,8 @@ const NavBar = () => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const location = useLocation();
+  const { signOut } = useAuthContext();
+
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -59,7 +58,7 @@ const NavBar = () => {
         navigate("/dashboard");
         break;
       case "Logout":
-        dispatch(logoutUser(navigate));
+        dispatch(logoutUser(signOut, navigate));
         break;
       default:
         break;
@@ -89,16 +88,16 @@ const NavBar = () => {
             BOOKTOWN
           </Typography>
 
-         
-         
+
+
           {/* Right: Always show user/cart section */}
           <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
             {auth?.selectedUser ? (
               <>
                 <Box sx={{ paddingRight: 2 }}>
-                <IconButton onClick={() => handleAddCartPage()}>
-                    <ShoppingCartRoundedIcon sx={{ width: 40, height: 40, color:'white' }}  />
-                </IconButton>
+                  <IconButton onClick={() => handleAddCartPage()}>
+                    <ShoppingCartRoundedIcon sx={{ width: 40, height: 40, color: 'white' }} />
+                  </IconButton>
                 </Box>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

@@ -1,11 +1,14 @@
 import Modal from "@mui/material/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
-import { loginUser } from "../state/authentication/Action";
+import { asgardeoLogin, loginUser } from "../state/authentication/Action";
+import { useAuthContext } from "@asgardeo/auth-react";
+import AsgardeoLogo from "../assets/Asgardeo.jpg";
+import Box from "@mui/material/Box";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +16,9 @@ const LoginPage = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [noticeOpen, setNoticeOpen] = useState(false);
+
+  const { signIn, getBasicUserInfo, state } = useAuthContext();
 
   const handleClose = () => {
     setOpen(false);
@@ -24,17 +30,32 @@ const LoginPage = () => {
     dispatch(loginUser(email, password, navigate));
   };
 
+  useEffect(() => {
+    if (state?.isAuthenticated) {
+      getBasicUserInfo().then((info) => {
+        const asgardeoData = {
+          email: info.email,
+          name: info.username || info.given_name || "Asgardeo User",
+          sub: info.sub
+        };
+        console.log(asgardeoData)
+        dispatch(asgardeoLogin(asgardeoData, navigate));
+      });
+    }
+  }, [state?.isAuthenticated, dispatch, getBasicUserInfo, navigate]);
 
   return (
     <Modal
-      open={open} sx={{
+      open={open}
+      sx={{
         backgroundImage: 'url("https://images2.alphacoders.com/261/26102.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         minHeight: '100vh',
         marginTop: 0
-      }}>
+      }}
+    >
       <div className="absolute top-1/2 left-1/2 w-[400px] -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-center w-full">Login</h2>
@@ -44,10 +65,7 @@ const LoginPage = () => {
           />
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <TextField
             label="Email"
             type="email"
@@ -78,9 +96,35 @@ const LoginPage = () => {
           >
             Login
           </Button>
+
+          {/* Asgardeo Login Button */}
+          <Button
+            onClick={() => setNoticeOpen(true)}
+            sx={{
+              backgroundColor: "transparent",
+              border: "none",
+              padding: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              "&:hover": { backgroundColor: "transparent" },
+            }}
+          >
+            <Box
+              component="img"
+              src={AsgardeoLogo}
+              alt="Asgardeo Login"
+              sx={{
+                height: 40,
+                border: "2px solid #1976d2",
+                borderRadius: 1,
+                display: "block",
+              }}
+            />
+          </Button>
+
         </form>
 
-        {/* Signup Link */}
         <p className="text-sm text-center mt-4">
           Don't have an account?{" "}
           <Link to="/signup" className="text-blue-600 hover:underline">
@@ -92,4 +136,4 @@ const LoginPage = () => {
   );
 }
 
-export default LoginPage
+export default LoginPage;
