@@ -3,25 +3,16 @@ import {
     changeOrderStatusStart, changeOrderStatusFailure, changeOrderStatusSuccess,
     getOrderByIdSuccess, getOrderByIdStart, getOrderByIdFailure,
     getOrderByUserIDStart, getOrderByUserIDSuccess, getOrderByUserIDFailure,
-    createOrderStart,
-    createOrderSuccess
+    createOrderStart, createOrderSuccess
 } from '../order/orderSlice'
-import { api, API_URL } from '../../config/API';
+import { securedApi } from '../../config/API';
 import { clearCartState } from '../cart/carttSlice';
 
 export const createOrder = (orderDetails) => async (dispatch) => {
-    console.info(orderDetails);
     dispatch(createOrderStart());
     try {
-        const token = localStorage.getItem('token');
-        const response = await api.post('/orders/', orderDetails ,{
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        if(response.status === 201){
-            
-        }
+        const response = await securedApi.post(`/orders`, orderDetails);
+
         dispatch(createOrderSuccess(response.data));
         dispatch(clearCartState());
     } catch (error) {
@@ -29,30 +20,17 @@ export const createOrder = (orderDetails) => async (dispatch) => {
             error.response?.data?.message || error.message || "Failed to create order";
         dispatch(getAllOrdersFailure(message));
         console.error("Fetch orders error:", message);
-        
+
     }
 }
 
 export const getAllOrders = () => async (dispatch) => {
     dispatch(getAllOrdersStart());
-    console.info("Fetching all orders......");
-    const token = localStorage.getItem("token");
-    if (!token) {
-        const message = "No authentication token found. Please log in.";
-        dispatch(getAllOrdersFailure(message));
-        console.error("Fetch orders error:", message);
-        return;
-    }
-    console.info("Token is present");
 
     try {
-        const response = await api.get(`/orders`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        console.info("Orders fetched :", response.data);
-        dispatch(getAllOrdersSuccess({ orders: response.data }));
+        const response = await securedApi.get(`/orders`);
+
+        dispatch(getAllOrdersSuccess(response.data));
     } catch (error) {
         const message =
             error.response?.data?.message || error.message || "Failed to fetch orders";
@@ -63,18 +41,10 @@ export const getAllOrders = () => async (dispatch) => {
 
 export const getOrdersByUserID = (userId) => async (dispatch) => {
     dispatch(getOrderByUserIDStart());
-    console.info("Fetching orders of ", userId);
-    const token = localStorage.getItem("token");
-    console.info("Token is present");
 
     try {
-        const response = await api.get(`/orders/user/${userId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        console.info("Orders fetched :", response.data);
-        dispatch(getOrderByUserIDSuccess({ orders: response.data }));
+        const response = await securedApi.get(`/orders/user/${userId}`);
+        dispatch(getOrderByUserIDSuccess( response.data ));
     } catch (error) {
         const message =
             error.response?.data?.message || error.message || "Failed to fetch orders";
@@ -85,18 +55,10 @@ export const getOrdersByUserID = (userId) => async (dispatch) => {
 
 export const getOrderById = (orderId) => async (dispatch) => {
     dispatch(getOrderByIdStart());
-    console.info("Fetching order by ID:", orderId);
-
     try {
-        const token = localStorage.getItem("token");
-        console.info("Token is present");
-        const response = await api.get(`/orders/${orderId}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        console.info("Order fetched:", response.data);
-        dispatch(getOrderByIdSuccess({ orders: [response.data] }));
+
+        const response = await securedApi.get(`/orders/${orderId}`);
+        dispatch(getOrderByIdSuccess( response.data ));
     } catch (error) {
         const message =
             error.response?.data?.message || error.message || "Failed to fetch order";
@@ -107,18 +69,8 @@ export const getOrderById = (orderId) => async (dispatch) => {
 
 export const changeOrderStatus = (orderId, orderStatus) => async (dispatch) => {
     dispatch(changeOrderStatusStart());
-    console.info("Fetching order by ID:", orderId);
     try {
-        const token = localStorage.getItem("token");
-        console.info("Token is present");
-
-        const response = await api.put(`/orders/${orderId}`, { orderStatus }, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }
-        );
-        console.info("Order change:", response);
+        const response = await securedApi.put(`/orders/${orderId}`, { orderStatus });
         dispatch(changeOrderStatusSuccess(response.data));
     } catch (error) {
         const message =

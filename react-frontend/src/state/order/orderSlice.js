@@ -18,7 +18,7 @@ const orderSlice = createSlice({
         },
         getAllOrdersSuccess: (state, action) => {
             state.isLoading = false;
-            state.orders = action.payload.orders;
+            state.orders = action.payload;
             state.success = true;
         },
         getAllOrdersFailure: (state, action) => {
@@ -32,10 +32,7 @@ const orderSlice = createSlice({
         },
         getOrderByIdSuccess: (state, action) => {
             state.isLoading = false;
-            const order = state.orders.find(order => order.id === action.payload.id);
-            if (order) {
-                state.selectedOrder = order;
-            }
+            state.selectedOrder = action.payload;
             state.success = true;
         },
         getOrderByIdFailure: (state, action) => {
@@ -63,7 +60,7 @@ const orderSlice = createSlice({
         },
         getOrderByUserIDSuccess: (state, action) => {
             state.isLoading = false;
-            state.orders = action.payload.orders;
+            state.orders = action.payload;
             state.success = true;
         },
         getOrderByUserIDFailure: (state) => {
@@ -90,7 +87,7 @@ const orderSlice = createSlice({
             state.error = null;
             state.isLoading = false;
             state.orders = [],
-                state.selectedOrder = null;
+            state.selectedOrder = null;
             state.success = null;
         }
     },

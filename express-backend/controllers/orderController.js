@@ -23,9 +23,9 @@ export async function createOrder(req, res) {
 
       // Reduce stock
       product.stock -= item.quantity;
-      await product.save(); 
+      await product.save();
 
-      const orderItem = new OrderItem({ product: item.book, quantity: item.quantity });
+      const orderItem = new OrderItem({ book: item.book, quantity: item.quantity });
       await orderItem.save();
       totalPrice += product.price * item.quantity;
       orderItems.push(orderItem._id);
@@ -33,13 +33,13 @@ export async function createOrder(req, res) {
 
     // Create the order
     const order = new Order({ user, items: orderItems, totalPrice, ...otherFields });
-    await order.save(); 
+    await order.save();
 
     // clear the cart for the user
-    const cart = await Cart.findOne({ user }); 
+    const cart = await Cart.findOne({ user });
     if (cart) {
       cart.items = [];
-      await cart.save(); 
+      await cart.save();
     }
 
     res.status(201).json(order);
@@ -52,9 +52,16 @@ export async function createOrder(req, res) {
 // get all orders
 export async function findAllOrders(req, res) {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find()
+      .populate({
+        path: 'items',
+        populate: { path: 'book' }
+      })
+      .populate('user', 'name email')
+      .sort({ orderdAt: -1 });
+
     res.status(200).json(orders);
-  } catch(err) {
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 }
@@ -63,10 +70,10 @@ export async function findAllOrders(req, res) {
 export async function findOrderById(req, res) {
   try {
     const order = await Order.findById(req.params.id)
-      .populate('user', 'name email') 
+      .populate('user', 'name email')
       .populate({
         path: 'items',
-        populate: { path: 'book' } 
+        populate: { path: 'book' }
       });
 
     if (!order) return res.status(404).json({ message: 'Order not found' });
@@ -80,8 +87,11 @@ export async function findOrderById(req, res) {
 export async function findOrdersByUser(req, res) {
   try {
     const orders = await Order.find({ user: req.params.userId })
-      .populate('items')
-      .populate('user', 'name email');
+      .populate({
+        path: 'items',
+        populate: { path: 'book' }
+      })
+      .sort({ orderdAt: -1 });
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -90,7 +100,6 @@ export async function findOrdersByUser(req, res) {
 
 // Update order status by Order ID (e.g. shipped, delivered)
 export async function updateOrderStatus(req, res) {
-  console.info(req.body)
   try {
     const { orderStatus } = req.body;
     const validStatuses = ['processing', 'shipped', 'delivered', 'cancelled'];
@@ -133,7 +142,6 @@ export async function deleteOrder(req, res) {
 export async function countOrders(req, res) {
   try {
     const count = await Order.countDocuments();
-    console.info("Order", count)
     res.status(200).json({ count });
   } catch (err) {
     console.error(err);

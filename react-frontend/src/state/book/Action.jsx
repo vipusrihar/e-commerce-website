@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '../../config/API';
+import { publicApi, securedApi } from '../../config/API';
 import {
     addBookStart, addBookSuccess, addBookFailure,
     updateBookStart, updateBookSuccess, updateBookFailure,
@@ -11,20 +11,8 @@ import {
 export const createBook = (bookData) => async (dispatch) => {
     dispatch(addBookStart());
     try {
-        const response = await fetch(`${API_URL}/books`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(bookData)
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to create book');
-        }
-
-        const data = await response.json();
+        const response = await securedApi.post('/books', bookData);
+        const data = response.data;
         dispatch(addBookSuccess(data));
     } catch (error) {
         dispatch(addBookFailure(error.message));
@@ -34,24 +22,11 @@ export const createBook = (bookData) => async (dispatch) => {
 
 export const updateBook = (hashid, bookData) => async (dispatch) => {
     dispatch(updateBookStart());
-    console.info("Fetching books....", hashid);
-    console.info("Book data to update:", bookData);
     try {
-        const token = localStorage.getItem('token');
-        console.info("Token:", token);
         if (!token) {
             throw new Error('User is not authenticated');
         }
-        const response = await axios.put(`${API_URL}/books/${hashid}`,bookData, 
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              }
-            }
-          );
-          
-        console.info("Update response:", response);  
+        const response = await securedApi.put(`/books/${hashid}`,bookData);
         const data = response.data;
         dispatch(updateBookSuccess(data));
         alert('Book updated successfully!');
@@ -65,10 +40,8 @@ export const updateBook = (hashid, bookData) => async (dispatch) => {
 
 export const getAllBooks = () => async (dispatch) => {
     dispatch(getAllBooksStart()); 
-    console.info("Fetching all books...");
     try {
-        const response = await axios.get(`${API_URL}/books/`); 
-        console.info("Books fetched", response.data);
+        const response = await publicApi.get(`/books/`); 
         dispatch(getAllBooksSuccess({ books: response.data })); 
     } catch (error) {
         const message = error.response?.data?.message || error.message || "Failed to fetch books";
@@ -80,7 +53,6 @@ export const getAllBooks = () => async (dispatch) => {
 
 export const getBookById = (hashid) => async (dispatch) => {
     dispatch(getBookByIdStart()); 
-    console.info("Fetching book with ID:", hashid);
 
     if (!hashid) {
         const message = "hashid is required to fetch book details";
@@ -90,9 +62,8 @@ export const getBookById = (hashid) => async (dispatch) => {
     }
 
     try {
-        const response = await axios.get(`${API_URL}/books/${hashid}`); 
+        const response = await publicApi.get(`/books/${hashid}`); 
         dispatch(getBookByIdSuccess(response.data));
-        console.info("Book fetched successfully:", response.data);
     } catch (error) {
         const message = error.response?.data?.message || error.message || "Failed to fetch book";
         dispatch(getBookByIdFailure(message)); 
@@ -102,16 +73,10 @@ export const getBookById = (hashid) => async (dispatch) => {
 
 export const deleteBookById = (hashid) => async (dispatch) => {
     dispatch(deleteBookStart());
-    console.info("Deleting book with ID:", hashid);
     try {
-        const response = await fetch(`${API_URL}/books/${hashid}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        const data = await response.json();
-        console.info("Book deleted successfully:", data);
+      
+        const response = await securedApi.delete(`/books/${hashid}`);
+        const data = response.data;
         alert('Book deleted successfully!');
     } catch (error) {
         console.error("Delete book error:", error.message);

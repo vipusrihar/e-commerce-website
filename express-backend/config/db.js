@@ -10,10 +10,7 @@ console.info('DATABASE:', process.env.DATABASE);
 
 const connectDB = async () => {
   try {
-    await connect(process.env.DATABASE, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await connect(process.env.DATABASE);
     console.info("MongoDB connected successfully ✅");
   } catch (error) {
     console.error("MongoDB connection failed ❌", error.message);

@@ -6,31 +6,15 @@ import {
     getDiscountByBookIdFailure, getDiscountByBookIdStart, getDiscountByBookIdSuccess,
     updateDiscountStatusFailure, updateDiscountStatusStart, updateDiscountStatusSuccess,
 } from './discountSlice'
-import { API_URL } from '../../config/API';
+import { securedApi } from '../../config/API';
 
 export const createDiscount = (discount) => async (dispatch) => {
     dispatch(createDiscountStart());
-    console.info("creating discount");
 
     try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/discounts/createDiscount`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ discount }),
-        });
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed tocreate discount');
-        }
-
-        const data = await response.json();
-        console.info("order Created :", data)
+        const response = await securedApi.post('/discounts/createDiscount', discount);
+        const data = response.data;
         dispatch(createDiscountSuccess(data));
-        console.info("discount created successfully:", data);
     } catch (error) {
         console.error("Create discount error:", error.message);
         dispatch(createDiscountFailure(error.message));
@@ -42,17 +26,8 @@ export const createDiscount = (discount) => async (dispatch) => {
 export const getAllDiscounts = () => async (dispatch) => {
     dispatch(getAllDiscountsStart());
     try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/discounts/getAllDiscounts`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch discounts');
-        }
-        const data = await response.json();
-        console.info("All discounts ", data)
+        const response = await securedApi.get('/discounts/getAllDiscounts');
+        const data = response.data;
         dispatch(getAllDiscountsSuccess(data));
     } catch (error) {
         dispatch(getAllDiscountsFailure(error.message));
@@ -61,24 +36,12 @@ export const getAllDiscounts = () => async (dispatch) => {
 
 
 export const editDiscount = (discountId, updatedData) => async (dispatch) => {
-    console.info('discount Id', discountId);
-    console.info("data", updatedData)
+
     dispatch(editDiscountStart());
     try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/discounts/editDiscount/${discountId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(updatedData),
-        });
-        console.info(response);
-        if (!response.ok) {
-            throw new Error('Failed to update discount');
-        }
-        const data = await response.json();
+        const response = await securedApi.put(`/discounts/editDiscount/${discountId}`, updatedData);
+
+        const data = response.data;
         dispatch(editDiscountSuccess(data));
     } catch (error) {
         dispatch(editDiscountFailure(error.message));
@@ -90,25 +53,8 @@ export const updateDiscountStatusById = (id, active) => async (dispatch) => {
     dispatch(updateDiscountStatusStart());
 
     try {
-        const token = localStorage.getItem('token');
-
-        const response = await fetch(`${API_URL}/discounts/updateStatus/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ active }), // shorthand is fine
-        });
-
-        const data = await response.json();
-        console.info('Update Status Response:', data);
-
-        if (!response.ok) {
-            alert(data.message || 'Failed to update discount status')
-            throw new Error(data.message || 'Failed to update discount status');
-        }
-
+        const response = await securedApi.put(`/discounts/updateStatus/${id}`, { active });
+        const data = response.data;
         dispatch(updateDiscountStatusSuccess(data.discount));
     } catch (error) {
         console.error('Update Discount Status Error:', error);
@@ -120,18 +66,9 @@ export const updateDiscountStatusById = (id, active) => async (dispatch) => {
 export const findDiscountByBookId = (bookId) => async (dispatch) => {
     dispatch(getDiscountByBookIdStart());
     try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/discounts/byBook/${bookId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        console.info(response);
-        if (!response.ok) {
-            throw new Error('Failed to find discount by book ID');
-        }
-        const data = await response.json();
-        console.info(data);
+
+        const response = await securedApi.get(`/discounts/byBook/${bookId}`);
+        const data = response.data;
         dispatch(getDiscountByBookIdSuccess(data));
     } catch (error) {
         dispatch(getDiscountByBookIdFailure(error.message));
@@ -141,20 +78,10 @@ export const findDiscountByBookId = (bookId) => async (dispatch) => {
 export const deleteDiscountById = (id) => async (dispatch) => {
     dispatch(deleteDiscountStart());
     try {
-        const token = localStorage.getItem('token');
 
-        const response = await fetch(`${API_URL}/discounts/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await securedApi.delete(`/discounts/${id}`);
 
-        const data = await response.json(); 
-
-        if (!response.ok) {
-            throw new Error(data.error || data.message || 'Failed to delete discount');
-        }
+        const data = response.data;
 
         dispatch(deleteDiscountSuccess(data));
     } catch (error) {

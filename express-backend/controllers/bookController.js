@@ -119,7 +119,6 @@ const  deleteBook = async (req, res) => {
 export async function countBooks(req, res) {
     try {
         const count = await Book.countDocuments();
-        console.info("Book",count)
         res.status(200).json({ count });
     } catch (err) {
         console.error(err);

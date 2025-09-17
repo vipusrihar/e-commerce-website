@@ -8,10 +8,6 @@ import { useSelector } from 'react-redux';
 const AddDiscountForm = ({ dialogType, selectedDiscount, handleChange,
     handleSave, handleCloseDialog }) => {
 
-
-
-    console.info(selectedDiscount);
-
     const availableBooks = useSelector((store) => store.books.books);
     return (
         <Box sx={{ p: 2, border: '1px solid #ccc', borderRadius: 2, mb: 3, backgroundColor: 'white' }}>

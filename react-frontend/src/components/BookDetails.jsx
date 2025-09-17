@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBookById } from '../state/book/Action';
 import AddToCartModal from './AddToCartModal';
 import { addCartItem } from '../state/cart/Action';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 const BookDetails = () => {
   const hashid = window.location.pathname.split('/').pop();
@@ -45,14 +47,15 @@ const BookDetails = () => {
   const handleConfirmAddToCart = () => {
     dispatch(addCartItem(selectedBook._id, quantity, userId));
     alert("Item added to cart successfully!")
-    console.info("Add to Cart:", selectedBook, quantity);
     setModalOpen(false);
   };
 
 
   return (
-    <>
-      <Grid container spacing={4} alignItems="flex-start" sx={{ padding: 4, border: 1, margin: 4 }}>
+   <div className='p-5'>
+     <ArrowBackIcon onClick={() => window.history.back()} className='m-2' />
+      <Grid container spacing={4} alignItems="flex-start" sx={{ padding: 4, border: 1, margin: 2 }}>
+
         <Grid size={2}>
           <Box
             component="img"
@@ -106,8 +109,7 @@ const BookDetails = () => {
         setQuantity={setQuantity}
         onConfirm={handleConfirmAddToCart}
       />
-
-    </>
+   </div>
   );
 };
 

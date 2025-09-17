@@ -15,7 +15,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../state/authentication/Action';
-import { useAuthContext } from '@asgardeo/auth-react';
 
 
 const settings = ['Profile', 'Activity', 'Logout'];
@@ -26,7 +25,6 @@ const NavBar = () => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const { signOut } = useAuthContext();
 
 
   const handleOpenUserMenu = (event) => {
@@ -55,10 +53,10 @@ const NavBar = () => {
         navigate("/profile");
         break;
       case "Activity":
-        navigate("/dashboard");
+        navigate("/orders");
         break;
       case "Logout":
-        dispatch(logoutUser(signOut, navigate));
+        dispatch(logoutUser(navigate));
         break;
       default:
         break;

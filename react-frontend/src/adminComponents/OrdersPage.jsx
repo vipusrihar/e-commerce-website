@@ -36,6 +36,7 @@ const OrdersPage = () => {
     dispatch(getAllOrders());
   }, [dispatch]);
 
+
   useEffect(() => {
     if (ordersFromStore) {
       setOrders(ordersFromStore);
@@ -96,23 +97,34 @@ const OrdersPage = () => {
               {orders.map((row, index) => (
                 <TableRow
                   hover
-                  key={row._id}
+                  key={row._id || index} // fallback if _id is missing
                   sx={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB' }}
                 >
                   <TableCell>{row._id}</TableCell>
-                  <TableCell>{row.user}</TableCell>
-
                   <TableCell>
-                    {row.orderdAt?.split('T')[0]}
-                    <br />
-                    {row.orderdAt?.split('T')[1]?.split(':').slice(0, 2).join(':')}
+                    {row.user?.name || row.user?.email || 'Unknown User'}
+                  </TableCell>
+                  <TableCell>
+                    {row.orderdAt ? (
+                      <>
+                        {row.orderdAt.split('T')[0]}
+                        <br />
+                        {row.orderdAt.split('T')[1]?.split(':').slice(0, 2).join(':')}
+                      </>
+                    ) : (
+                      'N/A'
+                    )}
                   </TableCell>
 
-                  <TableCell>{row.totalPrice}</TableCell>
+                  <TableCell>{row.totalPrice ?? '0.00'}</TableCell>
 
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Chip label={row.orderStatus} color={getStatusColor(row.orderStatus)} size="small" />
+                      <Chip
+                        label={row.orderStatus || 'Unknown'}
+                        color={getStatusColor(row.orderStatus)}
+                        size="small"
+                      />
                       <Button
                         variant="outlined"
                         size="small"
@@ -125,6 +137,7 @@ const OrdersPage = () => {
                 </TableRow>
               ))}
             </TableBody>
+
           </Table>
         </TableContainer>
       </Paper>

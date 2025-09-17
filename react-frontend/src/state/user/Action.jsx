@@ -1,11 +1,9 @@
 import axios from "axios";
-import { API_URL } from "../../config/API";
+import { securedApi } from "../../config/API";
 import {
-    getAllUsersFailure, getAllUsersStart,getAllUsersSuccess,
-     getUserByIdFailure, getUserByIdStart, getUserByIdSuccess,
-     updateUserFailure,
-     updateUserStart,
-     updateUserSuccess
+    getAllUsersFailure, getAllUsersStart, getAllUsersSuccess,
+    getUserByIdFailure, getUserByIdStart, getUserByIdSuccess,
+    updateUserFailure, updateUserStart, updateUserSuccess
 } from "./userSlice";
 
 
@@ -20,11 +18,7 @@ export const getAllUsers = () => async (dispatch) => {
     }
 
     try {
-        const response = await axios.get(`${API_URL}/users`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await securedApi.get('/users');
 
         dispatch(getAllUsersSuccess({ users: response.data }));
     } catch (error) {
@@ -47,11 +41,8 @@ export const getUserById = (id) => async (dispatch) => {
     }
 
     try {
-        const response = await axios.get(`${API_URL}/users/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+
+        const response = await securedApi.get(`/users/${id}`);
 
         dispatch(getUserByIdSuccess(response.data.user));
     } catch (error) {
@@ -64,23 +55,16 @@ export const getUserById = (id) => async (dispatch) => {
 
 
 export const updateUser = (id, updatedData) => async (dispatch) => {
-    console.info(id,"ed",updatedData)
     dispatch(updateUserStart());
     try {
-        const token = localStorage.getItem('token');
-        const { data } = await axios.put(`${API_URL}/users/${id}`, updatedData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        console.info("Update success:", data);
+        const response = await securedApi.put(`/users/${id}`, updatedData);
+        const data = response.data;
         dispatch(updateUserSuccess(data));
 
     } catch (error) {
         // Extract just the error message
         const errorMessage = error?.response?.data?.message || error.message || "Update failed";
-        
+
         console.error("Update failed:", errorMessage);
         dispatch(updateUserFailure(errorMessage));  // pass only the message
     }

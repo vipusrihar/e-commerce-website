@@ -7,8 +7,8 @@ import AdminPage from "./pages/AdminPage";
 import BookDetails from "./components/BookDetails";
 import CartPage from "./userComponents/CartPage";
 import ProfilePage from "./userComponents/ProfilePage";
-import DashboardPage from "./userComponents/DashboardPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import UsersOrderTable from "./userComponents/UsersOrderTable";
 
 function AppContent() {
   const location = useLocation();
@@ -26,7 +26,7 @@ function AppContent() {
         <Route path="/book/:hashid" element={<BookDetails />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/orders" element={<UsersOrderTable />} />
         <Route path="/adminDashboard/*" element={<AdminPage />} />
       </Routes>
     </>

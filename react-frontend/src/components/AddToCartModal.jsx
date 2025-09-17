@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-  Modal,  Box,  Typography,
-  TextField,  Button,} from '@mui/material';
+  Modal, Box, Typography,
+  TextField, Button,
+} from '@mui/material';
 
-const AddToCartModal = ({  open,  onClose,  book,  quantity,  setQuantity,  onConfirm,}) => {
+const AddToCartModal = ({ open, onClose, book, quantity, setQuantity, onConfirm, }) => {
+  
   if (!book) return null;
 
   return (
@@ -24,15 +26,15 @@ const AddToCartModal = ({  open,  onClose,  book,  quantity,  setQuantity,  onCo
         <Typography variant="h6" gutterBottom className='text-center text-yellow-900 '>
           Add to Cart
         </Typography>
-      <div className=''>
+        <div className=''>
           <Typography><b>Title:</b> {book.title}</Typography>
-        <Typography><b>Author:</b> {book.author}</Typography>
-        <Typography><b>Price:</b> Rs. {book.price}</Typography>
-      </div>
+          <Typography><b>Author:</b> {book.author}</Typography>
+          <Typography><b>Price:</b> Rs. {book.price}</Typography>
+        </div>
         <TextField
           label="Quantity"
           type="number"
-          setProps={{ min: 1 }}
+          inputProps={{ min: 1 }}
           value={quantity}
           onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
           fullWidth

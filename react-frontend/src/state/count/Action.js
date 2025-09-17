@@ -1,26 +1,15 @@
 import axios from 'axios';
-import { API_URL } from '../../config/API';
+import { securedApi } from '../../config/API';
 import { getCountsStart, getCountsSuccess, getCountsFailure } from './countSlice';
 
 export const fetchAllCounts = () => async (dispatch) => {
     dispatch(getCountsStart());
 
     try {
-        const token = localStorage.getItem('token');
-
-        const headers = {
-
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-
-        };
-
-        const userRes = await axios.get(`${API_URL}/users/count`, headers);
-        const orderRes = await axios.get(`${API_URL}/orders/count`, headers);
-        const bookRes = await axios.get(`${API_URL}/books/count`, headers);
-        const discountRes = await axios.get(`${API_URL}/discounts/count`, headers);
+        const userRes = await securedApi.get(`/users/count`);
+        const orderRes = await securedApi.get(`/orders/count`);
+        const bookRes = await securedApi.get(`/books/count`);
+        const discountRes = await securedApi.get(`/discounts/count`);
 
         dispatch(getCountsSuccess({
             users: userRes.data.count,

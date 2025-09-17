@@ -17,11 +17,6 @@ const userSchema = new mongoose.Schema({
         minlength: 8,
         select: false // optional for SSO users
     },
-    asgardeoId: {
-        type: String,
-        unique: true,
-        sparse: true
-    },
     role: {
         type: String,
         enum: ['USER', 'ADMIN'],

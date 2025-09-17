@@ -7,7 +7,6 @@ import Cart from '../models/Cart.js';
 export async function findAllUsers(req, res) {
     try {
         const users = await User.find({ role: 'USER' }).select('-password');
-        console.info(users)
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -74,7 +73,6 @@ export async function deleteUser(req, res) {
 export async function countUsers(req, res) {
     try {
         const count = await User.countDocuments({ role: 'USER' });
-        console.info("User",count)
         res.status(200).json({ count });
     } catch (err) {
         console.error(err);

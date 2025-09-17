@@ -43,10 +43,10 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.selectedUser = null;
-            state.jwt = null;
-            // state.users = [];
+            state.token = null;
             state.isLoading = false;
             state.success = null;
+            state.error = null;
         },
     },
 });

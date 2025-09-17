@@ -103,6 +103,8 @@ const CartPage = () => {
                     </TableCell>
                   </TableRow>
                 );
+
+                
               })}
               <TableRow>
                 <TableCell colSpan={5} sx={{ fontWeight: 'bold' }}>Subtotal</TableCell>
