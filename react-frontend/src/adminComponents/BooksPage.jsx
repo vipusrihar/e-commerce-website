@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddBookForm from './AddBookForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBook, deleteBookById, getAllBooks, updateBook } from '../state/book/Action';
+import { toast } from 'react-toastify';
 
 const columns = [
   { id: 'isbn', label: 'ISBN', minWidth: 100 },
@@ -68,7 +69,7 @@ const BooksPage = () => {
 
   const handleAddBook = (newBook) => {
     dispatch(createBook(newBook));
-    alert('Book added successfully!');
+    toast.success('Book added successfully!');
     handleClose();
   };
 

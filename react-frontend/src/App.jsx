@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { loginSuccess } from "./state/authentication/authSlice";
 import { Box } from "@mui/material";
 import Footer from "./components/Footer";
+import { ToastContainer } from "react-toastify";
 
 function InnerApp() {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ function InnerApp() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box sx={{ flex: 1 }}>
+        <ToastContainer />
         <AppContent />
       </Box>
       {!hideNav && <Footer />}

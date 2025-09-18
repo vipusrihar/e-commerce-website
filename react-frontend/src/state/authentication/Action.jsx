@@ -9,15 +9,16 @@ import { clearCartState } from "../cart/carttSlice";
 import { clearOrderState } from "../order/orderSlice";
 // import { clearReviewState } from "../review/reviewSlice";
 import { clearUserState } from "../user/userSlice";
+import { toast } from "react-toastify";
 
 export const loginUser = (email, password, navigate) => async (dispatch) => {
   dispatch(loginStart());
   try {
     const response = await publicApi.post("/auth/login", { email, password });
-  
+
     dispatch(loginSuccess(response.data));
 
-    localStorage.setItem("token", response.data.token);  
+    localStorage.setItem("token", response.data.token);
     localStorage.setItem("auth", JSON.stringify(response.data));
 
     const role = response?.data?.selectedUser?.role || response?.data?.user?.role;
@@ -26,11 +27,11 @@ export const loginUser = (email, password, navigate) => async (dispatch) => {
     } else {
       navigate("/home");
     }
-    alert("Login successful!");
+    toast.success("Login successful!");
   } catch (error) {
     const message = error.response?.data?.message || "Login failed. Please try again.";
     dispatch(loginFailure(message));
-    alert(message);
+    toast.error(message);
   }
 };
 
@@ -39,13 +40,13 @@ export const registerUser = (userData, navigate) => async (dispatch) => {
   try {
     const response = await publicApi.post("/auth/signup", userData);
     dispatch(registerSuccess(response.data));
-    alert("Registration successful. Please login.");
+    toast.success("Registration successful. Please login.");
     navigate("/login");
   } catch (error) {
     console.error("Registration failed:", error);
     const message = error.response?.data?.message || "Registration failed. Please try again.";
     dispatch(registerFailure(message));
-    alert(message);
+    toast.error(message);
   }
 };
 
@@ -63,7 +64,7 @@ export const logoutUser = (navigate) => async (dispatch) => {
     dispatch(clearUserState());
 
     // Inform the user (optional)
-    alert("You have been logged out.");
+    toast.success("You have been logged out.");
     navigate("/home");
 
   } catch (error) {

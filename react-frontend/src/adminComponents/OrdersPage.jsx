@@ -10,8 +10,10 @@ const columns = [
   { id: '_id', label: 'Order ID', minWidth: 100 },
   { id: 'user', label: 'User', minWidth: 150 },
   { id: 'date', label: 'Date', minWidth: 120 },
+  { id: 'items', label: 'Items', minWidth: 100 },
   { id: 'totalPrice', label: 'Total ($)', minWidth: 100 },
   { id: 'orderStatus', label: 'Status', minWidth: 150 },
+
 ];
 
 const getStatusColor = (status) => {
@@ -97,7 +99,7 @@ const OrdersPage = () => {
               {orders.map((row, index) => (
                 <TableRow
                   hover
-                  key={row._id || index} // fallback if _id is missing
+                  key={row._id}
                   sx={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB' }}
                 >
                   <TableCell>{row._id}</TableCell>
@@ -115,6 +117,15 @@ const OrdersPage = () => {
                       'N/A'
                     )}
                   </TableCell>
+
+                  <TableCell>
+                    {row.items.map((item, index) => (
+                      <div key={index}>
+                        {item?.book?.title} (x{item?.quantity})
+                      </div>
+                    ))}
+                  </TableCell>
+
 
                   <TableCell>{row.totalPrice ?? '0.00'}</TableCell>
 

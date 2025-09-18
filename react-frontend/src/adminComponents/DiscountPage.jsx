@@ -12,6 +12,7 @@ import {
 import { getAllBooks } from '../state/book/Action';
 import AddDiscountForm from './AddDiscountForm';
 import EditIcon from '@mui/icons-material/Edit';
+import { toast } from 'react-toastify';
 
 const columns = [
   { id: 'code', label: 'Code', minWidth: 100 },
@@ -72,12 +73,12 @@ const DiscountsPage = () => {
     const { code, amount, validFrom, validTo, appliesToAll, books } = selectedDiscount;
 
     if (!code || !amount || !validFrom || !validTo) {
-      alert('Please fill in all required fields.');
+      toast.error('Please fill in all required fields.');
       return;
     }
 
     if (!appliesToAll && (!books || books.length === 0)) {
-      alert('Please select at least one book or enable "Applies to all".');
+      toast.error('Please select at least one book or enable "Applies to all".');
       return;
     }
 

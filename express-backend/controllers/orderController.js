@@ -112,7 +112,11 @@ export async function updateOrderStatus(req, res) {
       req.params.id,
       { orderStatus },
       { new: true }
-    );
+    ).populate({
+      path: 'items',
+      populate: { path: 'book' }
+    })
+      .populate('user', 'name email')
 
     if (!order) return res.status(404).json({ message: 'Order not found' });
 

@@ -5,6 +5,7 @@ import { getBookById } from '../state/book/Action';
 import AddToCartModal from './AddToCartModal';
 import { addCartItem } from '../state/cart/Action';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { toast } from 'react-toastify';
 
 
 const BookDetails = () => {
@@ -32,7 +33,7 @@ const BookDetails = () => {
     setSelectedBook(book);
     setQuantity(1);
     if (!userId) {
-      alert("Please login to add items to your cart.");
+      toast.info("Please login to add items to your cart.");
       return;
     }
     setModalOpen(true);
@@ -46,7 +47,7 @@ const BookDetails = () => {
 
   const handleConfirmAddToCart = () => {
     dispatch(addCartItem(selectedBook._id, quantity, userId));
-    alert("Item added to cart successfully!")
+    toast.success("Item added to cart successfully!")
     setModalOpen(false);
   };
 

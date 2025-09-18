@@ -19,7 +19,7 @@ const cartSlice = createSlice({
             state.success = true;
             state.cartItems = action.payload;
         },
-        addCartItemFailure : (state) =>{
+        addCartItemFailure : (state, action) =>{
             state.isLoading = false;
             state.success  = false;
             state.error = action.payload

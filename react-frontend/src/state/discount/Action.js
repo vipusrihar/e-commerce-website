@@ -7,6 +7,7 @@ import {
     updateDiscountStatusFailure, updateDiscountStatusStart, updateDiscountStatusSuccess,
 } from './discountSlice'
 import { securedApi } from '../../config/API';
+import { toast } from 'react-toastify';
 
 export const createDiscount = (discount) => async (dispatch) => {
     dispatch(createDiscountStart());
@@ -85,7 +86,7 @@ export const deleteDiscountById = (id) => async (dispatch) => {
 
         dispatch(deleteDiscountSuccess(data));
     } catch (error) {
-        alert(`${error.message}`);
+        toast.error(`${error.message}`);
         dispatch(deleteDiscountFailure(error.message));
     }
 };

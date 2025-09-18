@@ -14,6 +14,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { uploadImageToCloudinary } from '../utils/uploadImageToCloudinary';
+import { toast } from 'react-toastify';
 
 const AddBookForm = ({ onClose, onSubmit, initialData = null }) => {
   const [uploadImage, setUploadImage] = useState(false);
@@ -51,7 +52,7 @@ const AddBookForm = ({ onClose, onSubmit, initialData = null }) => {
       onSubmit(form);
       onClose();
     } else {
-      alert("Please fill in all required fields.");
+      toast.info("Please fill in all required fields.");
     }
   };
 

@@ -5,6 +5,7 @@ import {
     getUserByIdFailure, getUserByIdStart, getUserByIdSuccess,
     updateUserFailure, updateUserStart, updateUserSuccess
 } from "./userSlice";
+import { toast } from "react-toastify";
 
 
 export const getAllUsers = () => async (dispatch) => {
@@ -60,13 +61,15 @@ export const updateUser = (id, updatedData) => async (dispatch) => {
         const response = await securedApi.put(`/users/${id}`, updatedData);
         const data = response.data;
         dispatch(updateUserSuccess(data));
+        toast.success("Updated sucessfully")
 
     } catch (error) {
         // Extract just the error message
         const errorMessage = error?.response?.data?.message || error.message || "Update failed";
 
         console.error("Update failed:", errorMessage);
-        dispatch(updateUserFailure(errorMessage));  // pass only the message
+        dispatch(updateUserFailure(errorMessage));
+        toast.error(errorMessage)
     }
 };
 

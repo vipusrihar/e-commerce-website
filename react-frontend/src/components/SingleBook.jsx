@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBookById } from '../state/book/Action';
 import { useNavigate } from 'react-router-dom';
 import { addCartItem } from '../state/cart/Action';
+import { toast } from 'react-toastify';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -60,6 +61,9 @@ const SingleBook = ({ book }) => {
     }
 
     const handleAddToCart = (book) => {
+        if (!userId) {
+            toast.info("Please login to add items to your cart")
+        }
         setSelectedBook(book);
         setQuantity(1);
         setModalOpen(true);
@@ -67,15 +71,15 @@ const SingleBook = ({ book }) => {
 
     const handleConfirmAddToCart = () => {
         dispatch(addCartItem(selectedBook._id, quantity, userId));
-        alert("Item added to cart successfully!");
+        toast.success("Item added to cart successfully!");
         setModalOpen(false);
     };
 
     return (
         <>
             <Grid size={3} key={book._id}>
-                <Item>
-                    <ImageContainer>
+                <Item >
+                    <ImageContainer >
                         <Chip
                             label={`Rs. ${book.price}`}
                             variant="outlined"
@@ -89,17 +93,19 @@ const SingleBook = ({ book }) => {
                                 zIndex: 3,
                             }}
                         />
-
                         <Box
                             component="img"
                             src={book.image}
                             alt={book.title}
                             sx={{
                                 width: '100%',
-                                height: 200,
-                                objectFit: 'cover',
+                                height: 'auto',   
+                                maxHeight: 300,
+                                objectFit: 'contain',
+                                borderRadius: 1.25,
                             }}
                         />
+
 
                         <Overlay className="overlay">
                             <Tooltip title="View Book">

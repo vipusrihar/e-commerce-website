@@ -6,12 +6,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../state/authentication/Action";
+import { toast } from "react-toastify";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
   const [repassword, setRepassword] = useState("");
   const [role,setRole] = useState("USER"); 
   const [open, setOpen] = useState(true);
@@ -26,12 +26,12 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !email || !password || !repassword) {
-      alert("Please fill all fields");
+      toast.info("Please fill all fields");
       return;
     }
 
     if (password !== repassword) {
-      alert("Password Not match")
+      toast.error("Password Not match")
       return;
     }
     const userData = {

@@ -7,6 +7,7 @@ import {
 } from '../order/orderSlice'
 import { securedApi } from '../../config/API';
 import { clearCartState } from '../cart/carttSlice';
+import { toast } from 'react-toastify';
 
 export const createOrder = (orderDetails) => async (dispatch) => {
     dispatch(createOrderStart());
@@ -15,11 +16,13 @@ export const createOrder = (orderDetails) => async (dispatch) => {
 
         dispatch(createOrderSuccess(response.data));
         dispatch(clearCartState());
+        toast.success("Order placed successfully!");
     } catch (error) {
         const message =
             error.response?.data?.message || error.message || "Failed to create order";
         dispatch(getAllOrdersFailure(message));
         console.error("Fetch orders error:", message);
+        toast.error(message);
 
     }
 }
