@@ -157,7 +157,7 @@ const DiscountsPage = () => {
       </Modal>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 550 }}>
+        <TableContainer sx={{ maxHeight: 700 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>

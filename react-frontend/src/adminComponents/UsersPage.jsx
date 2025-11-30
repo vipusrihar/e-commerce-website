@@ -52,7 +52,7 @@ const UsersPage = () => {
       />
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 500 }}>
+        <TableContainer sx={{ maxHeight: 700 }}>
           <Table stickyHeader aria-label="users table">
             <TableHead>
               <TableRow sx={{ backgroundColor: '#FCD34D' }}>

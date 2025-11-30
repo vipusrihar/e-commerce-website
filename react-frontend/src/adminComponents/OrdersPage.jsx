@@ -75,7 +75,7 @@ const OrdersPage = () => {
       </Typography>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 550 }}>
+        <TableContainer sx={{ maxHeight: 700 }}>
           <Table stickyHeader aria-label="orders table">
             <TableHead>
               <TableRow>

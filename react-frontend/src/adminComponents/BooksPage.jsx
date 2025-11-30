@@ -174,7 +174,7 @@ const BooksPage = () => {
 
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 550 }}>
+        <TableContainer sx={{ maxHeight: 700 }}>
           <Table stickyHeader aria-label="table without pagination">
             <TableHead>
               <TableRow sx={{ backgroundColor: '#FCD34D' }}>
